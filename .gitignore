@@ -66,3 +66,5 @@ target/
 .ipynb_checkpoints
 
 .idea/
+.notebooks
+.DS_Store
