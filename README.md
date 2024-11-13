@@ -42,13 +42,7 @@ Python 3.8+
 ## Installation & Usage
 ### pip install
 
-You can install the package directly using:
-
-```sh
-pip install usd-search-client
-```
-
-alternatively you can install the latest package from source as follows:
+You can install the latest package from source as follows:
 
 ```sh
 pip install git+https://github.com/NVIDIA-Omniverse/usdsearch-client
