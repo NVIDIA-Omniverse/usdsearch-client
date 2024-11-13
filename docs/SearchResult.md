@@ -6,7 +6,7 @@
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **url** | **str** | URL of the asset | 
-**score** | **float** | Relevant measure that illustrates a degree similarity between the input query and the resulting asset. It is computed as the cosine similarity between the NVCLIP embedding of the input query and the respective NVCLIP embedding of the result | 
+**score** | **float** | Relative measure that illustrates a degree similarity between the input query and the resulting asset. It is computed as the cosine similarity between the NVCLIP embedding of the input query and the respective NVCLIP embedding of the result | 
 **embed** | **str** |  | [optional] 
 **root_prims** | [**List[Prim1]**](Prim1.md) |  | [optional] 
 **default_prims** | [**List[Prim1]**](Prim1.md) |  | [optional] 
