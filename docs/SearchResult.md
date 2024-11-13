@@ -6,7 +6,7 @@
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **url** | **str** | URL of the asset | 
-**score** | **float** |  | 
+**score** | **float** | Degree of relevance of the output asset to the input query. It is computed as the cosine similarity between the NVCLIP embedding of the input query and the respective NVCLIP embedding of the result | 
 **embed** | **str** |  | [optional] 
 **root_prims** | [**List[Prim1]**](Prim1.md) |  | [optional] 
 **default_prims** | [**List[Prim1]**](Prim1.md) |  | [optional] 
