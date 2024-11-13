@@ -150,10 +150,9 @@ from usd_search_client.models.spatial_query_response_item import SpatialQueryRes
 from usd_search_client.rest import ApiException
 from pprint import pprint
 
-# Defining the host is optional and defaults to http://api.staging.deepsearch-cloud.nvidia.com
 # See configuration.py for a list of all supported configuration parameters.
 configuration = usd_search_client.Configuration(
-    host = "http://api.staging.deepsearch-cloud.nvidia.com"
+    host = "http://api.my-usd-search-instance.example.com"
 )
 
 # The client must configure the authentication and authorization parameters
