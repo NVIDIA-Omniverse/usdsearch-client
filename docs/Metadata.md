@@ -17,7 +17,7 @@ Name | Type | Description | Notes
 ```python
 from usd_search_client.models.metadata import Metadata
 
-# TODO update the JSON string below
+# update the JSON string below
 json = "{}"
 # create an instance of Metadata from a JSON string
 metadata_instance = Metadata.from_json(json)

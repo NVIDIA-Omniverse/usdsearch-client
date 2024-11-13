@@ -12,7 +12,7 @@ Name | Type | Description | Notes
 ```python
 from usd_search_client.models.processing_timestamp import ProcessingTimestamp
 
-# TODO update the JSON string below
+# update the JSON string below
 json = "{}"
 # create an instance of ProcessingTimestamp from a JSON string
 processing_timestamp_instance = ProcessingTimestamp.from_json(json)

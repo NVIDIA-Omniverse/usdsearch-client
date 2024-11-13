@@ -32,7 +32,7 @@ Name | Type | Description | Notes
 ```python
 from usd_search_client.models.path_type import PathType
 
-# TODO update the JSON string below
+# update the JSON string below
 json = "{}"
 # create an instance of PathType from a JSON string
 path_type_instance = PathType.from_json(json)

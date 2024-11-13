@@ -14,7 +14,7 @@ Name | Type | Description | Notes
 ```python
 from usd_search_client.models.plugin_info import PluginInfo
 
-# TODO update the JSON string below
+# update the JSON string below
 json = "{}"
 # create an instance of PluginInfo from a JSON string
 plugin_info_instance = PluginInfo.from_json(json)

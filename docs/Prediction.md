@@ -13,7 +13,7 @@ Name | Type | Description | Notes
 ```python
 from usd_search_client.models.prediction import Prediction
 
-# TODO update the JSON string below
+# update the JSON string below
 json = "{}"
 # create an instance of Prediction from a JSON string
 prediction_instance = Prediction.from_json(json)

@@ -14,7 +14,7 @@ Name | Type | Description | Notes
 ```python
 from usd_search_client.models.storage_backend_info import StorageBackendInfo
 
-# TODO update the JSON string below
+# update the JSON string below
 json = "{}"
 # create an instance of StorageBackendInfo from a JSON string
 storage_backend_info_instance = StorageBackendInfo.from_json(json)

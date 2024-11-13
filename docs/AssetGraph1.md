@@ -13,7 +13,7 @@ Name | Type | Description | Notes
 ```python
 from usd_search_client.models.asset_graph1 import AssetGraph1
 
-# TODO update the JSON string below
+# update the JSON string below
 json = "{}"
 # create an instance of AssetGraph1 from a JSON string
 asset_graph1_instance = AssetGraph1.from_json(json)

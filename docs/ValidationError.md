@@ -14,7 +14,7 @@ Name | Type | Description | Notes
 ```python
 from usd_search_client.models.validation_error import ValidationError
 
-# TODO update the JSON string below
+# update the JSON string below
 json = "{}"
 # create an instance of ValidationError from a JSON string
 validation_error_instance = ValidationError.from_json(json)

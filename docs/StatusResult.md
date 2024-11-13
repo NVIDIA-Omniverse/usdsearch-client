@@ -14,7 +14,7 @@ Name | Type | Description | Notes
 ```python
 from usd_search_client.models.status_result import StatusResult
 
-# TODO update the JSON string below
+# update the JSON string below
 json = "{}"
 # create an instance of StatusResult from a JSON string
 status_result_instance = StatusResult.from_json(json)

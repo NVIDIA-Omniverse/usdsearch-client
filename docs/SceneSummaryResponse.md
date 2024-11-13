@@ -20,7 +20,7 @@ Name | Type | Description | Notes
 ```python
 from usd_search_client.models.scene_summary_response import SceneSummaryResponse
 
-# TODO update the JSON string below
+# update the JSON string below
 json = "{}"
 # create an instance of SceneSummaryResponse from a JSON string
 scene_summary_response_instance = SceneSummaryResponse.from_json(json)

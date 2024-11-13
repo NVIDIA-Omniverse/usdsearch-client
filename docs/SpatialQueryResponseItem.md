@@ -14,7 +14,7 @@ Name | Type | Description | Notes
 ```python
 from usd_search_client.models.spatial_query_response_item import SpatialQueryResponseItem
 
-# TODO update the JSON string below
+# update the JSON string below
 json = "{}"
 # create an instance of SpatialQueryResponseItem from a JSON string
 spatial_query_response_item_instance = SpatialQueryResponseItem.from_json(json)

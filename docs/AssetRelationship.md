@@ -14,7 +14,7 @@ Name | Type | Description | Notes
 ```python
 from usd_search_client.models.asset_relationship import AssetRelationship
 
-# TODO update the JSON string below
+# update the JSON string below
 json = "{}"
 # create an instance of AssetRelationship from a JSON string
 asset_relationship_instance = AssetRelationship.from_json(json)

@@ -24,7 +24,7 @@ Name | Type | Description | Notes
 ```python
 from usd_search_client.models.prim1 import Prim1
 
-# TODO update the JSON string below
+# update the JSON string below
 json = "{}"
 # create an instance of Prim1 from a JSON string
 prim1_instance = Prim1.from_json(json)

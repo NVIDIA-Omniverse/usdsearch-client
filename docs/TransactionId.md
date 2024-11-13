@@ -12,7 +12,7 @@ Name | Type | Description | Notes
 ```python
 from usd_search_client.models.transaction_id import TransactionId
 
-# TODO update the JSON string below
+# update the JSON string below
 json = "{}"
 # create an instance of TransactionId from a JSON string
 transaction_id_instance = TransactionId.from_json(json)

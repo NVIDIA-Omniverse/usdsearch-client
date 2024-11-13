@@ -21,7 +21,7 @@ Name | Type | Description | Notes
 ```python
 from usd_search_client.models.search_result import SearchResult
 
-# TODO update the JSON string below
+# update the JSON string below
 json = "{}"
 # create an instance of SearchResult from a JSON string
 search_result_instance = SearchResult.from_json(json)

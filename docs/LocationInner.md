@@ -11,7 +11,7 @@ Name | Type | Description | Notes
 ```python
 from usd_search_client.models.location_inner import LocationInner
 
-# TODO update the JSON string below
+# update the JSON string below
 json = "{}"
 # create an instance of LocationInner from a JSON string
 location_inner_instance = LocationInner.from_json(json)

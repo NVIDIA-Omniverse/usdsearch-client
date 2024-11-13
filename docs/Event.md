@@ -12,7 +12,7 @@ Name | Type | Description | Notes
 ```python
 from usd_search_client.models.event import Event
 
-# TODO update the JSON string below
+# update the JSON string below
 json = "{}"
 # create an instance of Event from a JSON string
 event_instance = Event.from_json(json)
