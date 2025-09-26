@@ -12,7 +12,7 @@ Name | Type | Description | Notes
 ```python
 from usd_search_client.models.usd_path import UsdPath
 
-# update the JSON string below
+# TODO update the JSON string below
 json = "{}"
 # create an instance of UsdPath from a JSON string
 usd_path_instance = UsdPath.from_json(json)

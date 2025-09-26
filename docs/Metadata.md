@@ -5,19 +5,19 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**created** | **str** |  | [optional] 
-**created_by** | **str** |  | [optional] 
-**modified** | **str** |  | [optional] 
-**modified_by** | **str** |  | [optional] 
-**size** | **float** |  | [optional] 
-**etag** | **str** |  | [optional] 
+**created** | **str** |  | 
+**created_by** | **str** |  | 
+**modified** | **str** |  | 
+**modified_by** | **str** |  | 
+**size** | **float** |  | 
+**etag** | **str** |  | 
 
 ## Example
 
 ```python
 from usd_search_client.models.metadata import Metadata
 
-# update the JSON string below
+# TODO update the JSON string below
 json = "{}"
 # create an instance of Metadata from a JSON string
 metadata_instance = Metadata.from_json(json)

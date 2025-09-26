@@ -7,14 +7,14 @@ Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **url** | **str** | URL of the asset | 
 **plugins_statuses** | [**Dict[str, PluginInfo]**](PluginInfo.md) | Indexing status of the asset for each plugin | 
-**storage_backend_info** | [**StorageBackendInfo**](StorageBackendInfo.md) | Status of the asset on the storage backend | 
+**storage_backend_info** | [**AssetStorageBackendInfo**](AssetStorageBackendInfo.md) |  | 
 
 ## Example
 
 ```python
 from usd_search_client.models.status_result import StatusResult
 
-# update the JSON string below
+# TODO update the JSON string below
 json = "{}"
 # create an instance of StatusResult from a JSON string
 status_result_instance = StatusResult.from_json(json)

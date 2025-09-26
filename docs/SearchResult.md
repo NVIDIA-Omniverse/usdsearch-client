@@ -6,7 +6,7 @@
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **url** | **str** | URL of the asset | 
-**score** | **float** | Relative measure that illustrates a degree similarity between the input query and the resulting asset. It is computed as the cosine similarity between the NVCLIP embedding of the input query and the respective NVCLIP embedding of the result | 
+**score** | **float** |  | 
 **embed** | **str** |  | [optional] 
 **root_prims** | [**List[Prim1]**](Prim1.md) |  | [optional] 
 **default_prims** | [**List[Prim1]**](Prim1.md) |  | [optional] 
@@ -21,7 +21,7 @@ Name | Type | Description | Notes
 ```python
 from usd_search_client.models.search_result import SearchResult
 
-# update the JSON string below
+# TODO update the JSON string below
 json = "{}"
 # create an instance of SearchResult from a JSON string
 search_result_instance = SearchResult.from_json(json)

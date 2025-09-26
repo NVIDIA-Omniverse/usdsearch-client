@@ -1,6 +1,5 @@
 # SearchMethod
 
-An enumeration.
 
 ## Enum
 

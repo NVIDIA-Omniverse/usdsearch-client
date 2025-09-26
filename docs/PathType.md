@@ -1,38 +1,39 @@
 # PathType
 
+This class is used to store the information about the path of the asset.
 
 ## Properties
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**uri** | **str** | Full asset URI | [optional] 
-**etag** | **str** | unique asset ID | [optional] 
-**status** | **str** | status of the operation | [optional] 
+**uri** | **str** |  | [optional] 
+**etag** | **str** |  | [optional] 
+**status** | **str** |  | [optional] 
 **event** | [**Event**](Event.md) |  | [optional] 
-**type** | **str** | type of the asset | [optional] 
-**ts** | **Dict[str, int]** | server timestamp | [optional] 
+**type** | **str** |  | [optional] 
+**ts** | **Dict[str, int]** |  | [optional] 
 **transaction_id** | [**TransactionId**](TransactionId.md) |  | [optional] 
-**acl** | **List[str]** | ACL list | [optional] 
+**acl** | **List[str]** |  | [optional] 
 **empty** | [**Empty**](Empty.md) |  | [optional] 
 **mounted** | [**Mounted**](Mounted.md) |  | [optional] 
-**size** | **int** | Size of the object in bytes | [optional] 
-**created_by** | **str** | user ID who created the object | [optional] 
-**created_date_seconds** | **int** | creation time (seconds) | [optional] 
-**modified_by** | **str** | user ID who last modified the object | [optional] 
-**modified_date_seconds** | **int** | last modification time (seconds) | [optional] 
-**hash_type** | **str** | type of hashing function | [optional] 
-**hash_value** | **str** | hash value (can be None for files on mounts) | [optional] 
-**hash_bsize** | **str** | Hash block size | [optional] 
-**is_deleted** | **bool** | flag to show that a file was deleted | [optional] 
-**deleted_by** | **str** | user ID who last deleted the asset | [optional] 
-**deleted_date_seconds** | **int** | time when the object was last deleted | [optional] 
+**size** | **int** |  | [optional] 
+**created_by** | **str** |  | [optional] 
+**created_date_seconds** | [**CreatedDateSeconds**](CreatedDateSeconds.md) |  | [optional] 
+**modified_by** | **str** |  | [optional] 
+**modified_date_seconds** | [**ModifiedDateSeconds**](ModifiedDateSeconds.md) |  | [optional] 
+**hash_type** | [**HashType**](HashType.md) |  | [optional] 
+**hash_value** | **str** |  | [optional] 
+**hash_bsize** | **int** |  | [optional] 
+**is_deleted** | **bool** |  | [optional] 
+**deleted_by** | **str** |  | [optional] 
+**deleted_date_seconds** | [**DeletedDateSeconds**](DeletedDateSeconds.md) |  | [optional] 
 
 ## Example
 
 ```python
 from usd_search_client.models.path_type import PathType
 
-# update the JSON string below
+# TODO update the JSON string below
 json = "{}"
 # create an instance of PathType from a JSON string
 path_type_instance = PathType.from_json(json)

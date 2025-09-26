@@ -8,14 +8,14 @@ Name | Type | Description | Notes
 **status** | **str** | asset status | 
 **hash_value** | [**HashValue**](HashValue.md) |  | [optional] 
 **processing_timestamp** | [**ProcessingTimestamp**](ProcessingTimestamp.md) |  | 
-**exception** | **str** | reason for the Non Ok status | [optional] 
+**exception** | **str** |  | [optional] 
 
 ## Example
 
 ```python
 from usd_search_client.models.plugin_item_status import PluginItemStatus
 
-# update the JSON string below
+# TODO update the JSON string below
 json = "{}"
 # create an instance of PluginItemStatus from a JSON string
 plugin_item_status_instance = PluginItemStatus.from_json(json)

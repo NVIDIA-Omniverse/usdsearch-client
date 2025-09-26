@@ -24,9 +24,9 @@
 """
     USD Search and Asset Graph Search APIs
 
-    # USD Search API Overview **USD Search API** is a collection of cloud-native microservices that enable developers, creators, and workflow specialists to efficiently search through vast collections of OpenUSD data, images, and other assets using natural language or image-based inputs. With these production-ready microservices, developers can deploy USD Search API onto their own infrastructure.  With USD Search API’s artificial intelligence (AI) features, you can quickly locate untagged and unstructured 3D data and digital assets, saving time navigating unstructured, untagged 3D data. USD Search API is capable of searching and indexing 3D asset databases, as well as navigating complex 3D scenes to perform spatial searches, without requiring manual tagging of assets. ## Features - **Natural Language Searches:** - Utilize AI to search for images and USD-based 3D models using simple, descriptive language. - **Image Similarity Searches:** - Find images similar to a reference image through AI-driven image comparisons. - **Metadata Filtering:** - Filter search results by file name, file type, creation/modification dates, file size, and creator/modifier metadata. - **USD Content Filtering with Asset Graph Search:** - When used with the Asset Graph Search, search capabilities are expanded to include filtering based on USD properties and object dimensions. - **Multiple Storage Backend Support:** - Compatible with various storage backends, including AWS S3 buckets and Omniverse Nucleus server. - **Advanced File Name, Extension, and Path Filters:** - Use wildcards for broad or specific file name and extension searches. - **Date and Size Range Filtering:** - Specify assets created or modified within certain date ranges or file sizes larger or smaller than a designated threshold. - **User-based Filtering:** - Filter assets based on their creator or modifier, allowing for searches tailored to particular users' contributions. - **Embedding-based Similarity Threshold:** - Set a similarity threshold for more nuanced control over search results in embedding-based searches. - **Custom Search Paths and Scenes:** - Specify search locations within the storage backend or conduct searches within specific scenes for targeted results. - **Return Detailed Results:** - Option to include images, metadata, root prims, and predictions in the search results.  # Asset Graph Search (AGS) API Overview **Asset Graph Search (AGS)** provides advanced querying capabilities for assets and USD trees indexed in a graph database. It supports proximity queries based on coordinates or prims to find objects within specified areas or radii, sorted by distance, and includes transformation options for vector alignment. The API also offers dependency and reverse dependency searches, helping to identify all assets referenced in a scene or scenes containing a particular asset, which can optimize scene loading and track dependency changes. By combining different query types, the AGS API enables complex scenarios for scene understanding, manipulation, and generation. Integrated with USD Search it provides in-scene search functionality. ## Features - **Proximity Queries:** - Find objects within a specified bounding box or radius. - Results sorted by distance with options for vector alignment using a transformation matrix. - **USD Property Queries:** - Enables querying objects in a 3D scene using USD properties, such as finding all assets with a specific semantic label. - **Asset Dependency Searches:** - Identify all assets referenced in a scene — including USD references, material references, or textures. - Reverse search to find all scenes containing a particular asset. - **Combined Query Capabilities:** - Enable complex scenarios for enhanced scene understanding, manipulation, and generation. - **Integration with USD Search:** - Provides in-scene search functionality. 
+    # USD Search API Overview **USD Search API** is a collection of cloud-native microservices that enable developers, creators, and workflow specialists to efficiently search through vast collections of OpenUSD data, images, and other assets using natural language or image-based inputs. With these production-ready microservices, developers can deploy USD Search API onto their own infrastructure. With USD Search API’s artificial intelligence (AI) features, you can quickly locate untagged and unstructured 3D data and digital assets, saving time navigating unstructured, untagged 3D data. USD Search API is capable of searching and indexing 3D asset databases, as well as navigating complex 3D scenes to perform spatial searches, without requiring manual tagging of assets. ## Features - **Natural Language Searches:** - Utilize AI to search for images and USD-based 3D models using simple, descriptive language. - **Image Similarity Searches:** - Find images similar to a reference image through AI-driven image comparisons. - **Metadata Filtering:** - Filter search results by file name, file type, creation/modification dates, file size, and creator/modifier metadata. - **USD Content Filtering with Asset Graph Search:** - When used with the Asset Graph Search, search capabilities are expanded to include filtering based on USD properties and object dimensions. - **Multiple Storage Backend Support:** - Compatible with various storage backends, including AWS S3 buckets and Omniverse Nucleus server. - **Advanced File Name, Extension, and Path Filters:** - Use wildcards for broad or specific file name and extension searches. - **Date and Size Range Filtering:** - Specify assets created or modified within certain date ranges or file sizes larger or smaller than a designated threshold. - **User-based Filtering:** - Filter assets based on their creator or modifier, allowing for searches tailored to particular users' contributions. - **Embedding-based Similarity Threshold:** - Set a similarity threshold for more nuanced control over search results in embedding-based searches. - **Custom Search Paths and Scenes:** - Specify search locations within the storage backend or conduct searches within specific scenes for targeted results. - **Return Detailed Results:** - Option to include images, metadata, root prims, and predictions in the search results.  # Asset Graph Search (AGS) API Overview **Asset Graph Search (AGS)** provides advanced querying capabilities for assets and USD trees indexed in a graph database. It supports proximity queries based on coordinates or prims to find objects within specified areas or radii, sorted by distance, and includes transformation options for vector alignment. The API also offers dependency and reverse dependency searches, helping to identify all assets referenced in a scene or scenes containing a particular asset, which can optimize scene loading and track dependency changes. By combining different query types, the AGS API enables complex scenarios for scene understanding, manipulation, and generation. Integrated with USD Search it provides in-scene search functionality. ## Features - **Proximity Queries:** - Find objects within a specified bounding box or radius. - Results sorted by distance with options for vector alignment using a transformation matrix. - **USD Property Queries:** - Enables querying objects in a 3D scene using USD properties, such as finding all assets with a specific semantic label. - **Asset Dependency Searches:** - Identify all assets referenced in a scene — including USD references, material references, or textures. - Reverse search to find all scenes containing a particular asset. - **Combined Query Capabilities:** - Enable complex scenarios for enhanced scene understanding, manipulation, and generation. - **Integration with USD Search:** - Provides in-scene search functionality. 
 
-    The version of the OpenAPI document: 1.0.0
+    The version of the OpenAPI document: 1.2.0
     Generated by OpenAPI Generator (https://openapi-generator.tech)
 
     Do not edit the class manually.
@@ -37,9 +37,10 @@ from pydantic import validate_call, Field, StrictFloat, StrictStr, StrictInt
 from typing import Any, Dict, List, Optional, Tuple, Union
 from typing_extensions import Annotated
 
-from pydantic import Field, StrictFloat, StrictInt, StrictStr
+from pydantic import Field, StrictBool, StrictFloat, StrictInt, StrictStr
 from typing import Any, List, Optional, Union
 from typing_extensions import Annotated
+
 from usd_search_client.models.prim import Prim
 from usd_search_client.models.spatial_query_response_item import SpatialQueryResponseItem
 
@@ -72,15 +73,16 @@ class AGSSpatialGraphApi:
         max_bbox_y: Annotated[Union[StrictFloat, StrictInt], Field(description="Query bounding box maximum Y")],
         max_bbox_z: Annotated[Union[StrictFloat, StrictInt], Field(description="Query bounding box maximum Z")],
         limit: Annotated[Optional[StrictInt], Field(description="Page size")] = None,
-        prim_type: Annotated[Optional[Any], Field(description="Retrieve prims of the specified types. Can provide either a single type or a list of types.")] = None,
+        prim_type: Annotated[Optional[List[str]], Field(description="Retrieve prims of the specified types.")] = None,
         usd_path_prefix: Annotated[Optional[StrictStr], Field(description="Retrieve prims with USD paths that begin with this prefix (i.e., the children of the prim at the specified path).")] = None,
         properties_filter: Annotated[Optional[StrictStr], Field(description="Filter prims based on USD attributes (note: only a subset of attributes configured in the indexing service is available). Format: `attribute1=abc,attribute2=456`")] = None,
-        min_bbox_dimension_x: Annotated[Optional[Union[StrictFloat, StrictInt]], Field(description="Minimum bounding box X dimension")] = None,
-        min_bbox_dimension_y: Annotated[Optional[Union[StrictFloat, StrictInt]], Field(description="Minimum bounding box Y dimension")] = None,
-        min_bbox_dimension_z: Annotated[Optional[Union[StrictFloat, StrictInt]], Field(description="Minimum bounding box Z dimension")] = None,
-        max_bbox_dimension_x: Annotated[Optional[Union[StrictFloat, StrictInt]], Field(description="Max bounding box X dimension")] = None,
-        max_bbox_dimension_y: Annotated[Optional[Union[StrictFloat, StrictInt]], Field(description="Max bounding box Y dimension")] = None,
-        max_bbox_dimension_z: Annotated[Optional[Union[StrictFloat, StrictInt]], Field(description="Max bounding box Z dimension")] = None,
+        min_bbox_dimension_x: Annotated[Optional[Union[Annotated[float, Field(strict=True, ge=0)], Annotated[int, Field(strict=True, ge=0)]]], Field(description="Minimum bounding box X dimension")] = None,
+        min_bbox_dimension_y: Annotated[Optional[Union[Annotated[float, Field(strict=True, ge=0)], Annotated[int, Field(strict=True, ge=0)]]], Field(description="Minimum bounding box Y dimension")] = None,
+        min_bbox_dimension_z: Annotated[Optional[Union[Annotated[float, Field(strict=True, ge=0)], Annotated[int, Field(strict=True, ge=0)]]], Field(description="Minimum bounding box Z dimension")] = None,
+        max_bbox_dimension_x: Annotated[Optional[Union[Annotated[float, Field(strict=True, ge=0)], Annotated[int, Field(strict=True, ge=0)]]], Field(description="Max bounding box X dimension")] = None,
+        max_bbox_dimension_y: Annotated[Optional[Union[Annotated[float, Field(strict=True, ge=0)], Annotated[int, Field(strict=True, ge=0)]]], Field(description="Max bounding box Y dimension")] = None,
+        max_bbox_dimension_z: Annotated[Optional[Union[Annotated[float, Field(strict=True, ge=0)], Annotated[int, Field(strict=True, ge=0)]]], Field(description="Max bounding box Z dimension")] = None,
+        use_scaled_bbox_dimensions: Annotated[Optional[StrictBool], Field(description="Search in the space of aligned bbox dimensions")] = None,
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -114,7 +116,7 @@ class AGSSpatialGraphApi:
         :type max_bbox_z: float
         :param limit: Page size
         :type limit: int
-        :param prim_type: Retrieve prims of the specified types. Can provide either a single type or a list of types.
+        :param prim_type: Retrieve prims of the specified types. 
         :type prim_type: PrimType
         :param usd_path_prefix: Retrieve prims with USD paths that begin with this prefix (i.e., the children of the prim at the specified path).
         :type usd_path_prefix: str
@@ -132,6 +134,8 @@ class AGSSpatialGraphApi:
         :type max_bbox_dimension_y: float
         :param max_bbox_dimension_z: Max bounding box Z dimension
         :type max_bbox_dimension_z: float
+        :param use_scaled_bbox_dimensions: Search in the space of aligned bbox dimensions
+        :type use_scaled_bbox_dimensions: bool
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
                                  timeout. It can also be a pair (tuple) of
@@ -172,6 +176,7 @@ class AGSSpatialGraphApi:
             max_bbox_dimension_x=max_bbox_dimension_x,
             max_bbox_dimension_y=max_bbox_dimension_y,
             max_bbox_dimension_z=max_bbox_dimension_z,
+            use_scaled_bbox_dimensions=use_scaled_bbox_dimensions,
             _request_auth=_request_auth,
             _content_type=_content_type,
             _headers=_headers,
@@ -204,15 +209,16 @@ class AGSSpatialGraphApi:
         max_bbox_y: Annotated[Union[StrictFloat, StrictInt], Field(description="Query bounding box maximum Y")],
         max_bbox_z: Annotated[Union[StrictFloat, StrictInt], Field(description="Query bounding box maximum Z")],
         limit: Annotated[Optional[StrictInt], Field(description="Page size")] = None,
-        prim_type: Annotated[Optional[Any], Field(description="Retrieve prims of the specified types. Can provide either a single type or a list of types.")] = None,
+        prim_type: Annotated[Optional[List[str]], Field(description="Retrieve prims of the specified types.")] = None,
         usd_path_prefix: Annotated[Optional[StrictStr], Field(description="Retrieve prims with USD paths that begin with this prefix (i.e., the children of the prim at the specified path).")] = None,
         properties_filter: Annotated[Optional[StrictStr], Field(description="Filter prims based on USD attributes (note: only a subset of attributes configured in the indexing service is available). Format: `attribute1=abc,attribute2=456`")] = None,
-        min_bbox_dimension_x: Annotated[Optional[Union[StrictFloat, StrictInt]], Field(description="Minimum bounding box X dimension")] = None,
-        min_bbox_dimension_y: Annotated[Optional[Union[StrictFloat, StrictInt]], Field(description="Minimum bounding box Y dimension")] = None,
-        min_bbox_dimension_z: Annotated[Optional[Union[StrictFloat, StrictInt]], Field(description="Minimum bounding box Z dimension")] = None,
-        max_bbox_dimension_x: Annotated[Optional[Union[StrictFloat, StrictInt]], Field(description="Max bounding box X dimension")] = None,
-        max_bbox_dimension_y: Annotated[Optional[Union[StrictFloat, StrictInt]], Field(description="Max bounding box Y dimension")] = None,
-        max_bbox_dimension_z: Annotated[Optional[Union[StrictFloat, StrictInt]], Field(description="Max bounding box Z dimension")] = None,
+        min_bbox_dimension_x: Annotated[Optional[Union[Annotated[float, Field(strict=True, ge=0)], Annotated[int, Field(strict=True, ge=0)]]], Field(description="Minimum bounding box X dimension")] = None,
+        min_bbox_dimension_y: Annotated[Optional[Union[Annotated[float, Field(strict=True, ge=0)], Annotated[int, Field(strict=True, ge=0)]]], Field(description="Minimum bounding box Y dimension")] = None,
+        min_bbox_dimension_z: Annotated[Optional[Union[Annotated[float, Field(strict=True, ge=0)], Annotated[int, Field(strict=True, ge=0)]]], Field(description="Minimum bounding box Z dimension")] = None,
+        max_bbox_dimension_x: Annotated[Optional[Union[Annotated[float, Field(strict=True, ge=0)], Annotated[int, Field(strict=True, ge=0)]]], Field(description="Max bounding box X dimension")] = None,
+        max_bbox_dimension_y: Annotated[Optional[Union[Annotated[float, Field(strict=True, ge=0)], Annotated[int, Field(strict=True, ge=0)]]], Field(description="Max bounding box Y dimension")] = None,
+        max_bbox_dimension_z: Annotated[Optional[Union[Annotated[float, Field(strict=True, ge=0)], Annotated[int, Field(strict=True, ge=0)]]], Field(description="Max bounding box Z dimension")] = None,
+        use_scaled_bbox_dimensions: Annotated[Optional[StrictBool], Field(description="Search in the space of aligned bbox dimensions")] = None,
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -246,7 +252,7 @@ class AGSSpatialGraphApi:
         :type max_bbox_z: float
         :param limit: Page size
         :type limit: int
-        :param prim_type: Retrieve prims of the specified types. Can provide either a single type or a list of types.
+        :param prim_type: Retrieve prims of the specified types. 
         :type prim_type: PrimType
         :param usd_path_prefix: Retrieve prims with USD paths that begin with this prefix (i.e., the children of the prim at the specified path).
         :type usd_path_prefix: str
@@ -264,6 +270,8 @@ class AGSSpatialGraphApi:
         :type max_bbox_dimension_y: float
         :param max_bbox_dimension_z: Max bounding box Z dimension
         :type max_bbox_dimension_z: float
+        :param use_scaled_bbox_dimensions: Search in the space of aligned bbox dimensions
+        :type use_scaled_bbox_dimensions: bool
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
                                  timeout. It can also be a pair (tuple) of
@@ -304,6 +312,7 @@ class AGSSpatialGraphApi:
             max_bbox_dimension_x=max_bbox_dimension_x,
             max_bbox_dimension_y=max_bbox_dimension_y,
             max_bbox_dimension_z=max_bbox_dimension_z,
+            use_scaled_bbox_dimensions=use_scaled_bbox_dimensions,
             _request_auth=_request_auth,
             _content_type=_content_type,
             _headers=_headers,
@@ -336,15 +345,16 @@ class AGSSpatialGraphApi:
         max_bbox_y: Annotated[Union[StrictFloat, StrictInt], Field(description="Query bounding box maximum Y")],
         max_bbox_z: Annotated[Union[StrictFloat, StrictInt], Field(description="Query bounding box maximum Z")],
         limit: Annotated[Optional[StrictInt], Field(description="Page size")] = None,
-        prim_type: Annotated[Optional[Any], Field(description="Retrieve prims of the specified types. Can provide either a single type or a list of types.")] = None,
+        prim_type: Annotated[Optional[List[str]], Field(description="Retrieve prims of the specified types.")] = None,
         usd_path_prefix: Annotated[Optional[StrictStr], Field(description="Retrieve prims with USD paths that begin with this prefix (i.e., the children of the prim at the specified path).")] = None,
         properties_filter: Annotated[Optional[StrictStr], Field(description="Filter prims based on USD attributes (note: only a subset of attributes configured in the indexing service is available). Format: `attribute1=abc,attribute2=456`")] = None,
-        min_bbox_dimension_x: Annotated[Optional[Union[StrictFloat, StrictInt]], Field(description="Minimum bounding box X dimension")] = None,
-        min_bbox_dimension_y: Annotated[Optional[Union[StrictFloat, StrictInt]], Field(description="Minimum bounding box Y dimension")] = None,
-        min_bbox_dimension_z: Annotated[Optional[Union[StrictFloat, StrictInt]], Field(description="Minimum bounding box Z dimension")] = None,
-        max_bbox_dimension_x: Annotated[Optional[Union[StrictFloat, StrictInt]], Field(description="Max bounding box X dimension")] = None,
-        max_bbox_dimension_y: Annotated[Optional[Union[StrictFloat, StrictInt]], Field(description="Max bounding box Y dimension")] = None,
-        max_bbox_dimension_z: Annotated[Optional[Union[StrictFloat, StrictInt]], Field(description="Max bounding box Z dimension")] = None,
+        min_bbox_dimension_x: Annotated[Optional[Union[Annotated[float, Field(strict=True, ge=0)], Annotated[int, Field(strict=True, ge=0)]]], Field(description="Minimum bounding box X dimension")] = None,
+        min_bbox_dimension_y: Annotated[Optional[Union[Annotated[float, Field(strict=True, ge=0)], Annotated[int, Field(strict=True, ge=0)]]], Field(description="Minimum bounding box Y dimension")] = None,
+        min_bbox_dimension_z: Annotated[Optional[Union[Annotated[float, Field(strict=True, ge=0)], Annotated[int, Field(strict=True, ge=0)]]], Field(description="Minimum bounding box Z dimension")] = None,
+        max_bbox_dimension_x: Annotated[Optional[Union[Annotated[float, Field(strict=True, ge=0)], Annotated[int, Field(strict=True, ge=0)]]], Field(description="Max bounding box X dimension")] = None,
+        max_bbox_dimension_y: Annotated[Optional[Union[Annotated[float, Field(strict=True, ge=0)], Annotated[int, Field(strict=True, ge=0)]]], Field(description="Max bounding box Y dimension")] = None,
+        max_bbox_dimension_z: Annotated[Optional[Union[Annotated[float, Field(strict=True, ge=0)], Annotated[int, Field(strict=True, ge=0)]]], Field(description="Max bounding box Z dimension")] = None,
+        use_scaled_bbox_dimensions: Annotated[Optional[StrictBool], Field(description="Search in the space of aligned bbox dimensions")] = None,
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -378,7 +388,7 @@ class AGSSpatialGraphApi:
         :type max_bbox_z: float
         :param limit: Page size
         :type limit: int
-        :param prim_type: Retrieve prims of the specified types. Can provide either a single type or a list of types.
+        :param prim_type: Retrieve prims of the specified types. 
         :type prim_type: PrimType
         :param usd_path_prefix: Retrieve prims with USD paths that begin with this prefix (i.e., the children of the prim at the specified path).
         :type usd_path_prefix: str
@@ -396,6 +406,8 @@ class AGSSpatialGraphApi:
         :type max_bbox_dimension_y: float
         :param max_bbox_dimension_z: Max bounding box Z dimension
         :type max_bbox_dimension_z: float
+        :param use_scaled_bbox_dimensions: Search in the space of aligned bbox dimensions
+        :type use_scaled_bbox_dimensions: bool
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
                                  timeout. It can also be a pair (tuple) of
@@ -436,6 +448,7 @@ class AGSSpatialGraphApi:
             max_bbox_dimension_x=max_bbox_dimension_x,
             max_bbox_dimension_y=max_bbox_dimension_y,
             max_bbox_dimension_z=max_bbox_dimension_z,
+            use_scaled_bbox_dimensions=use_scaled_bbox_dimensions,
             _request_auth=_request_auth,
             _content_type=_content_type,
             _headers=_headers,
@@ -472,6 +485,7 @@ class AGSSpatialGraphApi:
         max_bbox_dimension_x,
         max_bbox_dimension_y,
         max_bbox_dimension_z,
+        use_scaled_bbox_dimensions,
         _request_auth,
         _content_type,
         _headers,
@@ -481,8 +495,7 @@ class AGSSpatialGraphApi:
         _host = None
 
         _collection_formats: Dict[str, str] = {
-            "prim_type": "multi",
-            "usd_path_prefix": "multi"
+            "prim_type": "multi"
         }
 
         _path_params: Dict[str, str] = {}
@@ -562,6 +575,10 @@ class AGSSpatialGraphApi:
             
             _query_params.append(('max_bbox_dimension_z', max_bbox_dimension_z))
             
+        if use_scaled_bbox_dimensions is not None:
+            
+            _query_params.append(('use_scaled_bbox_dimensions', use_scaled_bbox_dimensions))
+            
         # process the header parameters
         # process the form parameters
         # process the body parameter
@@ -612,15 +629,16 @@ class AGSSpatialGraphApi:
         center_z: Annotated[Optional[Union[StrictFloat, StrictInt]], Field(description="Z coordinate of the query center.")] = None,
         transformation_matrix: Annotated[Optional[StrictStr], Field(description="Transformation matrix for the vector space. By default does not apply any transformation.")] = None,
         limit: Annotated[Optional[StrictInt], Field(description="Page size")] = None,
-        prim_type: Annotated[Optional[Any], Field(description="Retrieve prims of the specified types. Can provide either a single type or a list of types.")] = None,
+        prim_type: Annotated[Optional[List[str]], Field(description="Retrieve prims of the specified types.")] = None,
         usd_path_prefix: Annotated[Optional[StrictStr], Field(description="Retrieve prims with USD paths that begin with this prefix (i.e., the children of the prim at the specified path).")] = None,
         properties_filter: Annotated[Optional[StrictStr], Field(description="Filter prims based on USD attributes (note: only a subset of attributes configured in the indexing service is available). Format: `attribute1=abc,attribute2=456`")] = None,
-        min_bbox_dimension_x: Annotated[Optional[Union[StrictFloat, StrictInt]], Field(description="Minimum bounding box X dimension")] = None,
-        min_bbox_dimension_y: Annotated[Optional[Union[StrictFloat, StrictInt]], Field(description="Minimum bounding box Y dimension")] = None,
-        min_bbox_dimension_z: Annotated[Optional[Union[StrictFloat, StrictInt]], Field(description="Minimum bounding box Z dimension")] = None,
-        max_bbox_dimension_x: Annotated[Optional[Union[StrictFloat, StrictInt]], Field(description="Max bounding box X dimension")] = None,
-        max_bbox_dimension_y: Annotated[Optional[Union[StrictFloat, StrictInt]], Field(description="Max bounding box Y dimension")] = None,
-        max_bbox_dimension_z: Annotated[Optional[Union[StrictFloat, StrictInt]], Field(description="Max bounding box Z dimension")] = None,
+        min_bbox_dimension_x: Annotated[Optional[Union[Annotated[float, Field(strict=True, ge=0)], Annotated[int, Field(strict=True, ge=0)]]], Field(description="Minimum bounding box X dimension")] = None,
+        min_bbox_dimension_y: Annotated[Optional[Union[Annotated[float, Field(strict=True, ge=0)], Annotated[int, Field(strict=True, ge=0)]]], Field(description="Minimum bounding box Y dimension")] = None,
+        min_bbox_dimension_z: Annotated[Optional[Union[Annotated[float, Field(strict=True, ge=0)], Annotated[int, Field(strict=True, ge=0)]]], Field(description="Minimum bounding box Z dimension")] = None,
+        max_bbox_dimension_x: Annotated[Optional[Union[Annotated[float, Field(strict=True, ge=0)], Annotated[int, Field(strict=True, ge=0)]]], Field(description="Max bounding box X dimension")] = None,
+        max_bbox_dimension_y: Annotated[Optional[Union[Annotated[float, Field(strict=True, ge=0)], Annotated[int, Field(strict=True, ge=0)]]], Field(description="Max bounding box Y dimension")] = None,
+        max_bbox_dimension_z: Annotated[Optional[Union[Annotated[float, Field(strict=True, ge=0)], Annotated[int, Field(strict=True, ge=0)]]], Field(description="Max bounding box Z dimension")] = None,
+        use_scaled_bbox_dimensions: Annotated[Optional[StrictBool], Field(description="Search in the space of aligned bbox dimensions")] = None,
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -654,7 +672,7 @@ class AGSSpatialGraphApi:
         :type transformation_matrix: str
         :param limit: Page size
         :type limit: int
-        :param prim_type: Retrieve prims of the specified types. Can provide either a single type or a list of types.
+        :param prim_type: Retrieve prims of the specified types. 
         :type prim_type: PrimType
         :param usd_path_prefix: Retrieve prims with USD paths that begin with this prefix (i.e., the children of the prim at the specified path).
         :type usd_path_prefix: str
@@ -672,6 +690,8 @@ class AGSSpatialGraphApi:
         :type max_bbox_dimension_y: float
         :param max_bbox_dimension_z: Max bounding box Z dimension
         :type max_bbox_dimension_z: float
+        :param use_scaled_bbox_dimensions: Search in the space of aligned bbox dimensions
+        :type use_scaled_bbox_dimensions: bool
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
                                  timeout. It can also be a pair (tuple) of
@@ -712,6 +732,7 @@ class AGSSpatialGraphApi:
             max_bbox_dimension_x=max_bbox_dimension_x,
             max_bbox_dimension_y=max_bbox_dimension_y,
             max_bbox_dimension_z=max_bbox_dimension_z,
+            use_scaled_bbox_dimensions=use_scaled_bbox_dimensions,
             _request_auth=_request_auth,
             _content_type=_content_type,
             _headers=_headers,
@@ -744,15 +765,16 @@ class AGSSpatialGraphApi:
         center_z: Annotated[Optional[Union[StrictFloat, StrictInt]], Field(description="Z coordinate of the query center.")] = None,
         transformation_matrix: Annotated[Optional[StrictStr], Field(description="Transformation matrix for the vector space. By default does not apply any transformation.")] = None,
         limit: Annotated[Optional[StrictInt], Field(description="Page size")] = None,
-        prim_type: Annotated[Optional[Any], Field(description="Retrieve prims of the specified types. Can provide either a single type or a list of types.")] = None,
+        prim_type: Annotated[Optional[List[str]], Field(description="Retrieve prims of the specified types.")] = None,
         usd_path_prefix: Annotated[Optional[StrictStr], Field(description="Retrieve prims with USD paths that begin with this prefix (i.e., the children of the prim at the specified path).")] = None,
         properties_filter: Annotated[Optional[StrictStr], Field(description="Filter prims based on USD attributes (note: only a subset of attributes configured in the indexing service is available). Format: `attribute1=abc,attribute2=456`")] = None,
-        min_bbox_dimension_x: Annotated[Optional[Union[StrictFloat, StrictInt]], Field(description="Minimum bounding box X dimension")] = None,
-        min_bbox_dimension_y: Annotated[Optional[Union[StrictFloat, StrictInt]], Field(description="Minimum bounding box Y dimension")] = None,
-        min_bbox_dimension_z: Annotated[Optional[Union[StrictFloat, StrictInt]], Field(description="Minimum bounding box Z dimension")] = None,
-        max_bbox_dimension_x: Annotated[Optional[Union[StrictFloat, StrictInt]], Field(description="Max bounding box X dimension")] = None,
-        max_bbox_dimension_y: Annotated[Optional[Union[StrictFloat, StrictInt]], Field(description="Max bounding box Y dimension")] = None,
-        max_bbox_dimension_z: Annotated[Optional[Union[StrictFloat, StrictInt]], Field(description="Max bounding box Z dimension")] = None,
+        min_bbox_dimension_x: Annotated[Optional[Union[Annotated[float, Field(strict=True, ge=0)], Annotated[int, Field(strict=True, ge=0)]]], Field(description="Minimum bounding box X dimension")] = None,
+        min_bbox_dimension_y: Annotated[Optional[Union[Annotated[float, Field(strict=True, ge=0)], Annotated[int, Field(strict=True, ge=0)]]], Field(description="Minimum bounding box Y dimension")] = None,
+        min_bbox_dimension_z: Annotated[Optional[Union[Annotated[float, Field(strict=True, ge=0)], Annotated[int, Field(strict=True, ge=0)]]], Field(description="Minimum bounding box Z dimension")] = None,
+        max_bbox_dimension_x: Annotated[Optional[Union[Annotated[float, Field(strict=True, ge=0)], Annotated[int, Field(strict=True, ge=0)]]], Field(description="Max bounding box X dimension")] = None,
+        max_bbox_dimension_y: Annotated[Optional[Union[Annotated[float, Field(strict=True, ge=0)], Annotated[int, Field(strict=True, ge=0)]]], Field(description="Max bounding box Y dimension")] = None,
+        max_bbox_dimension_z: Annotated[Optional[Union[Annotated[float, Field(strict=True, ge=0)], Annotated[int, Field(strict=True, ge=0)]]], Field(description="Max bounding box Z dimension")] = None,
+        use_scaled_bbox_dimensions: Annotated[Optional[StrictBool], Field(description="Search in the space of aligned bbox dimensions")] = None,
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -786,7 +808,7 @@ class AGSSpatialGraphApi:
         :type transformation_matrix: str
         :param limit: Page size
         :type limit: int
-        :param prim_type: Retrieve prims of the specified types. Can provide either a single type or a list of types.
+        :param prim_type: Retrieve prims of the specified types. 
         :type prim_type: PrimType
         :param usd_path_prefix: Retrieve prims with USD paths that begin with this prefix (i.e., the children of the prim at the specified path).
         :type usd_path_prefix: str
@@ -804,6 +826,8 @@ class AGSSpatialGraphApi:
         :type max_bbox_dimension_y: float
         :param max_bbox_dimension_z: Max bounding box Z dimension
         :type max_bbox_dimension_z: float
+        :param use_scaled_bbox_dimensions: Search in the space of aligned bbox dimensions
+        :type use_scaled_bbox_dimensions: bool
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
                                  timeout. It can also be a pair (tuple) of
@@ -844,6 +868,7 @@ class AGSSpatialGraphApi:
             max_bbox_dimension_x=max_bbox_dimension_x,
             max_bbox_dimension_y=max_bbox_dimension_y,
             max_bbox_dimension_z=max_bbox_dimension_z,
+            use_scaled_bbox_dimensions=use_scaled_bbox_dimensions,
             _request_auth=_request_auth,
             _content_type=_content_type,
             _headers=_headers,
@@ -876,15 +901,16 @@ class AGSSpatialGraphApi:
         center_z: Annotated[Optional[Union[StrictFloat, StrictInt]], Field(description="Z coordinate of the query center.")] = None,
         transformation_matrix: Annotated[Optional[StrictStr], Field(description="Transformation matrix for the vector space. By default does not apply any transformation.")] = None,
         limit: Annotated[Optional[StrictInt], Field(description="Page size")] = None,
-        prim_type: Annotated[Optional[Any], Field(description="Retrieve prims of the specified types. Can provide either a single type or a list of types.")] = None,
+        prim_type: Annotated[Optional[List[str]], Field(description="Retrieve prims of the specified types.")] = None,
         usd_path_prefix: Annotated[Optional[StrictStr], Field(description="Retrieve prims with USD paths that begin with this prefix (i.e., the children of the prim at the specified path).")] = None,
         properties_filter: Annotated[Optional[StrictStr], Field(description="Filter prims based on USD attributes (note: only a subset of attributes configured in the indexing service is available). Format: `attribute1=abc,attribute2=456`")] = None,
-        min_bbox_dimension_x: Annotated[Optional[Union[StrictFloat, StrictInt]], Field(description="Minimum bounding box X dimension")] = None,
-        min_bbox_dimension_y: Annotated[Optional[Union[StrictFloat, StrictInt]], Field(description="Minimum bounding box Y dimension")] = None,
-        min_bbox_dimension_z: Annotated[Optional[Union[StrictFloat, StrictInt]], Field(description="Minimum bounding box Z dimension")] = None,
-        max_bbox_dimension_x: Annotated[Optional[Union[StrictFloat, StrictInt]], Field(description="Max bounding box X dimension")] = None,
-        max_bbox_dimension_y: Annotated[Optional[Union[StrictFloat, StrictInt]], Field(description="Max bounding box Y dimension")] = None,
-        max_bbox_dimension_z: Annotated[Optional[Union[StrictFloat, StrictInt]], Field(description="Max bounding box Z dimension")] = None,
+        min_bbox_dimension_x: Annotated[Optional[Union[Annotated[float, Field(strict=True, ge=0)], Annotated[int, Field(strict=True, ge=0)]]], Field(description="Minimum bounding box X dimension")] = None,
+        min_bbox_dimension_y: Annotated[Optional[Union[Annotated[float, Field(strict=True, ge=0)], Annotated[int, Field(strict=True, ge=0)]]], Field(description="Minimum bounding box Y dimension")] = None,
+        min_bbox_dimension_z: Annotated[Optional[Union[Annotated[float, Field(strict=True, ge=0)], Annotated[int, Field(strict=True, ge=0)]]], Field(description="Minimum bounding box Z dimension")] = None,
+        max_bbox_dimension_x: Annotated[Optional[Union[Annotated[float, Field(strict=True, ge=0)], Annotated[int, Field(strict=True, ge=0)]]], Field(description="Max bounding box X dimension")] = None,
+        max_bbox_dimension_y: Annotated[Optional[Union[Annotated[float, Field(strict=True, ge=0)], Annotated[int, Field(strict=True, ge=0)]]], Field(description="Max bounding box Y dimension")] = None,
+        max_bbox_dimension_z: Annotated[Optional[Union[Annotated[float, Field(strict=True, ge=0)], Annotated[int, Field(strict=True, ge=0)]]], Field(description="Max bounding box Z dimension")] = None,
+        use_scaled_bbox_dimensions: Annotated[Optional[StrictBool], Field(description="Search in the space of aligned bbox dimensions")] = None,
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -918,7 +944,7 @@ class AGSSpatialGraphApi:
         :type transformation_matrix: str
         :param limit: Page size
         :type limit: int
-        :param prim_type: Retrieve prims of the specified types. Can provide either a single type or a list of types.
+        :param prim_type: Retrieve prims of the specified types. 
         :type prim_type: PrimType
         :param usd_path_prefix: Retrieve prims with USD paths that begin with this prefix (i.e., the children of the prim at the specified path).
         :type usd_path_prefix: str
@@ -936,6 +962,8 @@ class AGSSpatialGraphApi:
         :type max_bbox_dimension_y: float
         :param max_bbox_dimension_z: Max bounding box Z dimension
         :type max_bbox_dimension_z: float
+        :param use_scaled_bbox_dimensions: Search in the space of aligned bbox dimensions
+        :type use_scaled_bbox_dimensions: bool
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
                                  timeout. It can also be a pair (tuple) of
@@ -976,6 +1004,7 @@ class AGSSpatialGraphApi:
             max_bbox_dimension_x=max_bbox_dimension_x,
             max_bbox_dimension_y=max_bbox_dimension_y,
             max_bbox_dimension_z=max_bbox_dimension_z,
+            use_scaled_bbox_dimensions=use_scaled_bbox_dimensions,
             _request_auth=_request_auth,
             _content_type=_content_type,
             _headers=_headers,
@@ -1012,6 +1041,7 @@ class AGSSpatialGraphApi:
         max_bbox_dimension_x,
         max_bbox_dimension_y,
         max_bbox_dimension_z,
+        use_scaled_bbox_dimensions,
         _request_auth,
         _content_type,
         _headers,
@@ -1021,8 +1051,7 @@ class AGSSpatialGraphApi:
         _host = None
 
         _collection_formats: Dict[str, str] = {
-            "prim_type": "multi",
-            "usd_path_prefix": "multi"
+            "prim_type": "multi"
         }
 
         _path_params: Dict[str, str] = {}
@@ -1101,6 +1130,10 @@ class AGSSpatialGraphApi:
         if max_bbox_dimension_z is not None:
             
             _query_params.append(('max_bbox_dimension_z', max_bbox_dimension_z))
+            
+        if use_scaled_bbox_dimensions is not None:
+            
+            _query_params.append(('use_scaled_bbox_dimensions', use_scaled_bbox_dimensions))
             
         # process the header parameters
         # process the form parameters

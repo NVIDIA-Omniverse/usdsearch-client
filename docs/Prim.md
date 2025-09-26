@@ -6,6 +6,7 @@
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **scene_url** | **str** | URL of the Prim&#39;s scene | 
+**scene_mpu** | **float** | MPU of the Prim&#39;s scene | [optional] [default to 1]
 **usd_path** | **str** | USD path of the prim withn scene &#x60;scene_url&#x60;. Unique within a single scene. | 
 **prim_type** | **str** | Prim type | 
 **source_asset_url** | **str** |  | [optional] 
@@ -25,13 +26,16 @@ Name | Type | Description | Notes
 **bbox_dimension_x** | **float** | X axis dimension of prim&#39;s bounding box | [readonly] 
 **bbox_dimension_y** | **float** | Y axis dimension of prim&#39;s bounding box | [readonly] 
 **bbox_dimension_z** | **float** | Z axis dimension of prim&#39;s bounding box | [readonly] 
+**scaled_bbox_dimension_x** | **float** | X axis dimension of prim&#39;s bounding box scaled by the MPU | [readonly] 
+**scaled_bbox_dimension_y** | **float** | Y axis dimension of prim&#39;s bounding box scaled by the MPU | [readonly] 
+**scaled_bbox_dimension_z** | **float** | Z axis dimension of prim&#39;s bounding box scaled by the MPU | [readonly] 
 
 ## Example
 
 ```python
 from usd_search_client.models.prim import Prim
 
-# update the JSON string below
+# TODO update the JSON string below
 json = "{}"
 # create an instance of Prim from a JSON string
 prim_instance = Prim.from_json(json)

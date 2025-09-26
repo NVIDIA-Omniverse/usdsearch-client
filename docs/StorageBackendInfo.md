@@ -5,16 +5,14 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**asset_status** | [**BackendStatusType**](BackendStatusType.md) | Status of the asset in the storage backend | 
-**storage_asset_hash** | **str** | Current hash value of the asset in storage | [optional] 
-**metadata** | [**PathType**](PathType.md) | asset metadata | [optional] 
+**backends** | [**Dict[str, StorageBackendItemInfo]**](StorageBackendItemInfo.md) |  | 
 
 ## Example
 
 ```python
 from usd_search_client.models.storage_backend_info import StorageBackendInfo
 
-# update the JSON string below
+# TODO update the JSON string below
 json = "{}"
 # create an instance of StorageBackendInfo from a JSON string
 storage_backend_info_instance = StorageBackendInfo.from_json(json)

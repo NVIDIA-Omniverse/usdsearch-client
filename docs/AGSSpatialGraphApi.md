@@ -1,5 +1,6 @@
 # usd_search_client.AGSSpatialGraphApi
 
+All URIs are relative to *http://api.my-usd-search-instance.example.com*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
@@ -8,7 +9,7 @@ Method | HTTP request | Description
 
 
 # **get_prims_within_bounding_box_asset_graph_usd_prims_spatial_bbox_get**
-> List[Prim] get_prims_within_bounding_box_asset_graph_usd_prims_spatial_bbox_get(scene_url, min_bbox_x, min_bbox_y, min_bbox_z, max_bbox_x, max_bbox_y, max_bbox_z, limit=limit, prim_type=prim_type, usd_path_prefix=usd_path_prefix, properties_filter=properties_filter, min_bbox_dimension_x=min_bbox_dimension_x, min_bbox_dimension_y=min_bbox_dimension_y, min_bbox_dimension_z=min_bbox_dimension_z, max_bbox_dimension_x=max_bbox_dimension_x, max_bbox_dimension_y=max_bbox_dimension_y, max_bbox_dimension_z=max_bbox_dimension_z)
+> List[Prim] get_prims_within_bounding_box_asset_graph_usd_prims_spatial_bbox_get(scene_url, min_bbox_x, min_bbox_y, min_bbox_z, max_bbox_x, max_bbox_y, max_bbox_z, limit=limit, prim_type=prim_type, usd_path_prefix=usd_path_prefix, properties_filter=properties_filter, min_bbox_dimension_x=min_bbox_dimension_x, min_bbox_dimension_y=min_bbox_dimension_y, min_bbox_dimension_z=min_bbox_dimension_z, max_bbox_dimension_x=max_bbox_dimension_x, max_bbox_dimension_y=max_bbox_dimension_y, max_bbox_dimension_z=max_bbox_dimension_z, use_scaled_bbox_dimensions=use_scaled_bbox_dimensions)
 
 Get Prims Within Bounding Box
 
@@ -26,6 +27,7 @@ from usd_search_client.models.prim import Prim
 from usd_search_client.rest import ApiException
 from pprint import pprint
 
+# Defining the host is optional and defaults to http://api.my-usd-search-instance.example.com
 # See configuration.py for a list of all supported configuration parameters.
 configuration = usd_search_client.Configuration(
     host = "http://api.my-usd-search-instance.example.com"
@@ -74,10 +76,11 @@ async with usd_search_client.ApiClient(configuration) as api_client:
     max_bbox_dimension_x = 3.4 # float | Max bounding box X dimension (optional)
     max_bbox_dimension_y = 3.4 # float | Max bounding box Y dimension (optional)
     max_bbox_dimension_z = 3.4 # float | Max bounding box Z dimension (optional)
+    use_scaled_bbox_dimensions = True # bool | Search in the space of aligned bbox dimensions (optional)
 
     try:
         # Get Prims Within Bounding Box
-        api_response = await api_instance.get_prims_within_bounding_box_asset_graph_usd_prims_spatial_bbox_get(scene_url, min_bbox_x, min_bbox_y, min_bbox_z, max_bbox_x, max_bbox_y, max_bbox_z, limit=limit, prim_type=prim_type, usd_path_prefix=usd_path_prefix, properties_filter=properties_filter, min_bbox_dimension_x=min_bbox_dimension_x, min_bbox_dimension_y=min_bbox_dimension_y, min_bbox_dimension_z=min_bbox_dimension_z, max_bbox_dimension_x=max_bbox_dimension_x, max_bbox_dimension_y=max_bbox_dimension_y, max_bbox_dimension_z=max_bbox_dimension_z)
+        api_response = await api_instance.get_prims_within_bounding_box_asset_graph_usd_prims_spatial_bbox_get(scene_url, min_bbox_x, min_bbox_y, min_bbox_z, max_bbox_x, max_bbox_y, max_bbox_z, limit=limit, prim_type=prim_type, usd_path_prefix=usd_path_prefix, properties_filter=properties_filter, min_bbox_dimension_x=min_bbox_dimension_x, min_bbox_dimension_y=min_bbox_dimension_y, min_bbox_dimension_z=min_bbox_dimension_z, max_bbox_dimension_x=max_bbox_dimension_x, max_bbox_dimension_y=max_bbox_dimension_y, max_bbox_dimension_z=max_bbox_dimension_z, use_scaled_bbox_dimensions=use_scaled_bbox_dimensions)
         print("The response of AGSSpatialGraphApi->get_prims_within_bounding_box_asset_graph_usd_prims_spatial_bbox_get:\n")
         pprint(api_response)
     except Exception as e:
@@ -108,6 +111,7 @@ Name | Type | Description  | Notes
  **max_bbox_dimension_x** | **float**| Max bounding box X dimension | [optional] 
  **max_bbox_dimension_y** | **float**| Max bounding box Y dimension | [optional] 
  **max_bbox_dimension_z** | **float**| Max bounding box Z dimension | [optional] 
+ **use_scaled_bbox_dimensions** | **bool**| Search in the space of aligned bbox dimensions | [optional] 
 
 ### Return type
 
@@ -132,7 +136,7 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **get_prims_within_radius_asset_graph_usd_prims_spatial_get**
-> List[SpatialQueryResponseItem] get_prims_within_radius_asset_graph_usd_prims_spatial_get(scene_url, radius, center_prim_usd_path=center_prim_usd_path, center_x=center_x, center_y=center_y, center_z=center_z, transformation_matrix=transformation_matrix, limit=limit, prim_type=prim_type, usd_path_prefix=usd_path_prefix, properties_filter=properties_filter, min_bbox_dimension_x=min_bbox_dimension_x, min_bbox_dimension_y=min_bbox_dimension_y, min_bbox_dimension_z=min_bbox_dimension_z, max_bbox_dimension_x=max_bbox_dimension_x, max_bbox_dimension_y=max_bbox_dimension_y, max_bbox_dimension_z=max_bbox_dimension_z)
+> List[SpatialQueryResponseItem] get_prims_within_radius_asset_graph_usd_prims_spatial_get(scene_url, radius, center_prim_usd_path=center_prim_usd_path, center_x=center_x, center_y=center_y, center_z=center_z, transformation_matrix=transformation_matrix, limit=limit, prim_type=prim_type, usd_path_prefix=usd_path_prefix, properties_filter=properties_filter, min_bbox_dimension_x=min_bbox_dimension_x, min_bbox_dimension_y=min_bbox_dimension_y, min_bbox_dimension_z=min_bbox_dimension_z, max_bbox_dimension_x=max_bbox_dimension_x, max_bbox_dimension_y=max_bbox_dimension_y, max_bbox_dimension_z=max_bbox_dimension_z, use_scaled_bbox_dimensions=use_scaled_bbox_dimensions)
 
 Get Prims Within Radius
 
@@ -150,6 +154,7 @@ from usd_search_client.models.spatial_query_response_item import SpatialQueryRes
 from usd_search_client.rest import ApiException
 from pprint import pprint
 
+# Defining the host is optional and defaults to http://api.my-usd-search-instance.example.com
 # See configuration.py for a list of all supported configuration parameters.
 configuration = usd_search_client.Configuration(
     host = "http://api.my-usd-search-instance.example.com"
@@ -198,10 +203,11 @@ async with usd_search_client.ApiClient(configuration) as api_client:
     max_bbox_dimension_x = 3.4 # float | Max bounding box X dimension (optional)
     max_bbox_dimension_y = 3.4 # float | Max bounding box Y dimension (optional)
     max_bbox_dimension_z = 3.4 # float | Max bounding box Z dimension (optional)
+    use_scaled_bbox_dimensions = True # bool | Search in the space of aligned bbox dimensions (optional)
 
     try:
         # Get Prims Within Radius
-        api_response = await api_instance.get_prims_within_radius_asset_graph_usd_prims_spatial_get(scene_url, radius, center_prim_usd_path=center_prim_usd_path, center_x=center_x, center_y=center_y, center_z=center_z, transformation_matrix=transformation_matrix, limit=limit, prim_type=prim_type, usd_path_prefix=usd_path_prefix, properties_filter=properties_filter, min_bbox_dimension_x=min_bbox_dimension_x, min_bbox_dimension_y=min_bbox_dimension_y, min_bbox_dimension_z=min_bbox_dimension_z, max_bbox_dimension_x=max_bbox_dimension_x, max_bbox_dimension_y=max_bbox_dimension_y, max_bbox_dimension_z=max_bbox_dimension_z)
+        api_response = await api_instance.get_prims_within_radius_asset_graph_usd_prims_spatial_get(scene_url, radius, center_prim_usd_path=center_prim_usd_path, center_x=center_x, center_y=center_y, center_z=center_z, transformation_matrix=transformation_matrix, limit=limit, prim_type=prim_type, usd_path_prefix=usd_path_prefix, properties_filter=properties_filter, min_bbox_dimension_x=min_bbox_dimension_x, min_bbox_dimension_y=min_bbox_dimension_y, min_bbox_dimension_z=min_bbox_dimension_z, max_bbox_dimension_x=max_bbox_dimension_x, max_bbox_dimension_y=max_bbox_dimension_y, max_bbox_dimension_z=max_bbox_dimension_z, use_scaled_bbox_dimensions=use_scaled_bbox_dimensions)
         print("The response of AGSSpatialGraphApi->get_prims_within_radius_asset_graph_usd_prims_spatial_get:\n")
         pprint(api_response)
     except Exception as e:
@@ -232,6 +238,7 @@ Name | Type | Description  | Notes
  **max_bbox_dimension_x** | **float**| Max bounding box X dimension | [optional] 
  **max_bbox_dimension_y** | **float**| Max bounding box Y dimension | [optional] 
  **max_bbox_dimension_z** | **float**| Max bounding box Z dimension | [optional] 
+ **use_scaled_bbox_dimensions** | **bool**| Search in the space of aligned bbox dimensions | [optional] 
 
 ### Return type
 

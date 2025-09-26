@@ -12,7 +12,7 @@ Name | Type | Description | Notes
 ```python
 from usd_search_client.models.http_validation_error import HTTPValidationError
 
-# update the JSON string below
+# TODO update the JSON string below
 json = "{}"
 # create an instance of HTTPValidationError from a JSON string
 http_validation_error_instance = HTTPValidationError.from_json(json)

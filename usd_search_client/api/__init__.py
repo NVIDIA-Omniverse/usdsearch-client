@@ -26,5 +26,9 @@ from usd_search_client.api.ags_asset_graph_api import AGSAssetGraphApi
 from usd_search_client.api.ags_scene_graph_api import AGSSceneGraphApi
 from usd_search_client.api.ags_spatial_graph_api import AGSSpatialGraphApi
 from usd_search_client.api.ai_search_api import AISearchApi
-from usd_search_client.api.indexing_status_api import IndexingStatusApi
+from usd_search_client.api.asset_api import AssetApi
+from usd_search_client.api.images_api import ImagesApi
+from usd_search_client.api.plugins_api import PluginsApi
+from usd_search_client.api.storage_backend_api import StorageBackendApi
+from usd_search_client.api.default_api import DefaultApi
 

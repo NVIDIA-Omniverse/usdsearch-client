@@ -5,16 +5,16 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**indexing_status** | [**PluginStatusType**](PluginStatusType.md) | Indexing status of the asset for a given plugin | 
-**indexed_asset_hash** | **str** | Hash of the indexed asset. If equal to the hash of the asset in storage, the indexed asset is up to date. | [optional] 
-**plugin_status_history** | [**List[PluginItemStatus]**](PluginItemStatus.md) | status history for plugins | [optional] 
+**indexing_status** | [**PluginStatusType**](PluginStatusType.md) |  | 
+**indexed_asset_hash** | **str** |  | [optional] 
+**plugin_status_history** | [**List[PluginItemStatus]**](PluginItemStatus.md) |  | [optional] 
 
 ## Example
 
 ```python
 from usd_search_client.models.plugin_info import PluginInfo
 
-# update the JSON string below
+# TODO update the JSON string below
 json = "{}"
 # create an instance of PluginInfo from a JSON string
 plugin_info_instance = PluginInfo.from_json(json)

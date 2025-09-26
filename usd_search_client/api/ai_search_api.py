@@ -24,9 +24,9 @@
 """
     USD Search and Asset Graph Search APIs
 
-    # USD Search API Overview **USD Search API** is a collection of cloud-native microservices that enable developers, creators, and workflow specialists to efficiently search through vast collections of OpenUSD data, images, and other assets using natural language or image-based inputs. With these production-ready microservices, developers can deploy USD Search API onto their own infrastructure.  With USD Search API’s artificial intelligence (AI) features, you can quickly locate untagged and unstructured 3D data and digital assets, saving time navigating unstructured, untagged 3D data. USD Search API is capable of searching and indexing 3D asset databases, as well as navigating complex 3D scenes to perform spatial searches, without requiring manual tagging of assets. ## Features - **Natural Language Searches:** - Utilize AI to search for images and USD-based 3D models using simple, descriptive language. - **Image Similarity Searches:** - Find images similar to a reference image through AI-driven image comparisons. - **Metadata Filtering:** - Filter search results by file name, file type, creation/modification dates, file size, and creator/modifier metadata. - **USD Content Filtering with Asset Graph Search:** - When used with the Asset Graph Search, search capabilities are expanded to include filtering based on USD properties and object dimensions. - **Multiple Storage Backend Support:** - Compatible with various storage backends, including AWS S3 buckets and Omniverse Nucleus server. - **Advanced File Name, Extension, and Path Filters:** - Use wildcards for broad or specific file name and extension searches. - **Date and Size Range Filtering:** - Specify assets created or modified within certain date ranges or file sizes larger or smaller than a designated threshold. - **User-based Filtering:** - Filter assets based on their creator or modifier, allowing for searches tailored to particular users' contributions. - **Embedding-based Similarity Threshold:** - Set a similarity threshold for more nuanced control over search results in embedding-based searches. - **Custom Search Paths and Scenes:** - Specify search locations within the storage backend or conduct searches within specific scenes for targeted results. - **Return Detailed Results:** - Option to include images, metadata, root prims, and predictions in the search results.  # Asset Graph Search (AGS) API Overview **Asset Graph Search (AGS)** provides advanced querying capabilities for assets and USD trees indexed in a graph database. It supports proximity queries based on coordinates or prims to find objects within specified areas or radii, sorted by distance, and includes transformation options for vector alignment. The API also offers dependency and reverse dependency searches, helping to identify all assets referenced in a scene or scenes containing a particular asset, which can optimize scene loading and track dependency changes. By combining different query types, the AGS API enables complex scenarios for scene understanding, manipulation, and generation. Integrated with USD Search it provides in-scene search functionality. ## Features - **Proximity Queries:** - Find objects within a specified bounding box or radius. - Results sorted by distance with options for vector alignment using a transformation matrix. - **USD Property Queries:** - Enables querying objects in a 3D scene using USD properties, such as finding all assets with a specific semantic label. - **Asset Dependency Searches:** - Identify all assets referenced in a scene — including USD references, material references, or textures. - Reverse search to find all scenes containing a particular asset. - **Combined Query Capabilities:** - Enable complex scenarios for enhanced scene understanding, manipulation, and generation. - **Integration with USD Search:** - Provides in-scene search functionality. 
+    # USD Search API Overview **USD Search API** is a collection of cloud-native microservices that enable developers, creators, and workflow specialists to efficiently search through vast collections of OpenUSD data, images, and other assets using natural language or image-based inputs. With these production-ready microservices, developers can deploy USD Search API onto their own infrastructure. With USD Search API’s artificial intelligence (AI) features, you can quickly locate untagged and unstructured 3D data and digital assets, saving time navigating unstructured, untagged 3D data. USD Search API is capable of searching and indexing 3D asset databases, as well as navigating complex 3D scenes to perform spatial searches, without requiring manual tagging of assets. ## Features - **Natural Language Searches:** - Utilize AI to search for images and USD-based 3D models using simple, descriptive language. - **Image Similarity Searches:** - Find images similar to a reference image through AI-driven image comparisons. - **Metadata Filtering:** - Filter search results by file name, file type, creation/modification dates, file size, and creator/modifier metadata. - **USD Content Filtering with Asset Graph Search:** - When used with the Asset Graph Search, search capabilities are expanded to include filtering based on USD properties and object dimensions. - **Multiple Storage Backend Support:** - Compatible with various storage backends, including AWS S3 buckets and Omniverse Nucleus server. - **Advanced File Name, Extension, and Path Filters:** - Use wildcards for broad or specific file name and extension searches. - **Date and Size Range Filtering:** - Specify assets created or modified within certain date ranges or file sizes larger or smaller than a designated threshold. - **User-based Filtering:** - Filter assets based on their creator or modifier, allowing for searches tailored to particular users' contributions. - **Embedding-based Similarity Threshold:** - Set a similarity threshold for more nuanced control over search results in embedding-based searches. - **Custom Search Paths and Scenes:** - Specify search locations within the storage backend or conduct searches within specific scenes for targeted results. - **Return Detailed Results:** - Option to include images, metadata, root prims, and predictions in the search results.  # Asset Graph Search (AGS) API Overview **Asset Graph Search (AGS)** provides advanced querying capabilities for assets and USD trees indexed in a graph database. It supports proximity queries based on coordinates or prims to find objects within specified areas or radii, sorted by distance, and includes transformation options for vector alignment. The API also offers dependency and reverse dependency searches, helping to identify all assets referenced in a scene or scenes containing a particular asset, which can optimize scene loading and track dependency changes. By combining different query types, the AGS API enables complex scenarios for scene understanding, manipulation, and generation. Integrated with USD Search it provides in-scene search functionality. ## Features - **Proximity Queries:** - Find objects within a specified bounding box or radius. - Results sorted by distance with options for vector alignment using a transformation matrix. - **USD Property Queries:** - Enables querying objects in a 3D scene using USD properties, such as finding all assets with a specific semantic label. - **Asset Dependency Searches:** - Identify all assets referenced in a scene — including USD references, material references, or textures. - Reverse search to find all scenes containing a particular asset. - **Combined Query Capabilities:** - Enable complex scenarios for enhanced scene understanding, manipulation, and generation. - **Integration with USD Search:** - Provides in-scene search functionality. 
 
-    The version of the OpenAPI document: 1.0.0
+    The version of the OpenAPI document: 1.2.0
     Generated by OpenAPI Generator (https://openapi-generator.tech)
 
     Do not edit the class manually.
@@ -38,10 +38,13 @@ from typing import Any, Dict, List, Optional, Tuple, Union
 from typing_extensions import Annotated
 
 from pydantic import Field, StrictBool, StrictFloat, StrictInt, StrictStr, field_validator
-from typing import Any, List, Optional, Union
+from typing import List, Optional, Union
 from typing_extensions import Annotated
-from usd_search_client.models.deep_search_search_request import DeepSearchSearchRequest
-from usd_search_client.models.search_result import SearchResult
+from usd_search_client.models.deep_search_search_request_v2 import DeepSearchSearchRequestV2
+from usd_search_client.models.deepsearch_api_routers_v2_models_search_result import DeepsearchApiRoutersV2ModelsSearchResult
+from usd_search_client.models.search_method import SearchMethod
+from usd_search_client.models.search_response import SearchResponse
+from usd_search_client.models.stats_response import StatsResponse
 
 from usd_search_client.api_client import ApiClient, RequestSerialized
 from usd_search_client.api_response import ApiResponse
@@ -60,11 +63,10 @@ class AISearchApi:
             api_client = ApiClient.get_default()
         self.api_client = api_client
 
-
     @validate_call
-    async def search_post_v2_deepsearch_search_post(
+    async def _search_hybrid_post(
         self,
-        deep_search_search_request: DeepSearchSearchRequest,
+        deep_search_search_request_v2: DeepSearchSearchRequestV2,
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -77,13 +79,13 @@ class AISearchApi:
         _content_type: Optional[StrictStr] = None,
         _headers: Optional[Dict[StrictStr, Any]] = None,
         _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
-    ) -> List[SearchResult]:
+    ) -> SearchResponse:
         """Search Post
 
-        Version 2 of the DeepSearch API search endpoint. All supported search parameters are available as body parameters. It *does not* support DeepSearch query language.  Search endpoint enables comprehensive searches across images (e.g., .jpg, .png) and USD-based 3D models within various storage backends (Nucleus, S3, etc.). It enables users to use natural language, image similarity, and precise metadata criteria (file name, type, date, size, creator, etc.) to locate relevant content efficiently. Furthermore, when integrated with the Asset Graph Service, DeepSearch extends its capabilities to include searches based on USD properties and spatial dimensions of 3D model bounding boxes, enhancing the ability to find assets that meet specific requirements.
+        Hybrid Search endpoint is an evolution of basic /search endpoint that supports the same filters but returns data in a new format and adds support for the following features: - **Enhanced Response Format**: Returns SearchResponse with detailed explanations and metadata - **Hybrid Search Support**: Combines text and vector search methods with configurable weights - **Advanced Explanations**: Provides detailed scoring explanations including RRF (Reciprocal Rank Fusion) scores - **Configurable Scoring**: Supports field-specific scoring configurations and weights - **Search Result Metadata**: Includes explanations, RRF ranks, and original ranks for transparency
 
-        :param deep_search_search_request: (required)
-        :type deep_search_search_request: DeepSearchSearchRequest
+        :param deep_search_search_request_v2: (required)
+        :type deep_search_search_request_v2: DeepSearchSearchRequestV2
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
                                  timeout. It can also be a pair (tuple) of
@@ -106,8 +108,8 @@ class AISearchApi:
         :return: Returns the result object.
         """ # noqa: E501
 
-        _param = self._search_post_v2_deepsearch_search_post_serialize(
-            deep_search_search_request=deep_search_search_request,
+        _param = self.__search_hybrid_post_serialize(
+            deep_search_search_request_v2=deep_search_search_request_v2,
             _request_auth=_request_auth,
             _content_type=_content_type,
             _headers=_headers,
@@ -115,7 +117,7 @@ class AISearchApi:
         )
 
         _response_types_map: Dict[str, Optional[str]] = {
-            '200': "List[SearchResult]",
+            '200': "SearchResponse",
             '422': "HTTPValidationError",
         }
         response_data = await self.api_client.call_api(
@@ -130,9 +132,9 @@ class AISearchApi:
 
 
     @validate_call
-    async def search_post_v2_deepsearch_search_post_with_http_info(
+    async def _search_hybrid_post_with_http_info(
         self,
-        deep_search_search_request: DeepSearchSearchRequest,
+        deep_search_search_request_v2: DeepSearchSearchRequestV2,
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -145,13 +147,13 @@ class AISearchApi:
         _content_type: Optional[StrictStr] = None,
         _headers: Optional[Dict[StrictStr, Any]] = None,
         _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
-    ) -> ApiResponse[List[SearchResult]]:
+    ) -> ApiResponse[SearchResponse]:
         """Search Post
 
-        Version 2 of the DeepSearch API search endpoint. All supported search parameters are available as body parameters. It *does not* support DeepSearch query language.  Search endpoint enables comprehensive searches across images (e.g., .jpg, .png) and USD-based 3D models within various storage backends (Nucleus, S3, etc.). It enables users to use natural language, image similarity, and precise metadata criteria (file name, type, date, size, creator, etc.) to locate relevant content efficiently. Furthermore, when integrated with the Asset Graph Service, DeepSearch extends its capabilities to include searches based on USD properties and spatial dimensions of 3D model bounding boxes, enhancing the ability to find assets that meet specific requirements.
+        Hybrid Search endpoint is an evolution of basic /search endpoint that supports the same filters but returns data in a new format and adds support for the following features: - **Enhanced Response Format**: Returns SearchResponse with detailed explanations and metadata - **Hybrid Search Support**: Combines text and vector search methods with configurable weights - **Advanced Explanations**: Provides detailed scoring explanations including RRF (Reciprocal Rank Fusion) scores - **Configurable Scoring**: Supports field-specific scoring configurations and weights - **Search Result Metadata**: Includes explanations, RRF ranks, and original ranks for transparency
 
-        :param deep_search_search_request: (required)
-        :type deep_search_search_request: DeepSearchSearchRequest
+        :param deep_search_search_request_v2: (required)
+        :type deep_search_search_request_v2: DeepSearchSearchRequestV2
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
                                  timeout. It can also be a pair (tuple) of
@@ -174,8 +176,8 @@ class AISearchApi:
         :return: Returns the result object.
         """ # noqa: E501
 
-        _param = self._search_post_v2_deepsearch_search_post_serialize(
-            deep_search_search_request=deep_search_search_request,
+        _param = self.__search_hybrid_post_serialize(
+            deep_search_search_request_v2=deep_search_search_request_v2,
             _request_auth=_request_auth,
             _content_type=_content_type,
             _headers=_headers,
@@ -183,7 +185,7 @@ class AISearchApi:
         )
 
         _response_types_map: Dict[str, Optional[str]] = {
-            '200': "List[SearchResult]",
+            '200': "SearchResponse",
             '422': "HTTPValidationError",
         }
         response_data = await self.api_client.call_api(
@@ -198,9 +200,9 @@ class AISearchApi:
 
 
     @validate_call
-    async def search_post_v2_deepsearch_search_post_without_preload_content(
+    async def _search_hybrid_post_without_preload_content(
         self,
-        deep_search_search_request: DeepSearchSearchRequest,
+        deep_search_search_request_v2: DeepSearchSearchRequestV2,
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -216,10 +218,10 @@ class AISearchApi:
     ) -> RESTResponseType:
         """Search Post
 
-        Version 2 of the DeepSearch API search endpoint. All supported search parameters are available as body parameters. It *does not* support DeepSearch query language.  Search endpoint enables comprehensive searches across images (e.g., .jpg, .png) and USD-based 3D models within various storage backends (Nucleus, S3, etc.). It enables users to use natural language, image similarity, and precise metadata criteria (file name, type, date, size, creator, etc.) to locate relevant content efficiently. Furthermore, when integrated with the Asset Graph Service, DeepSearch extends its capabilities to include searches based on USD properties and spatial dimensions of 3D model bounding boxes, enhancing the ability to find assets that meet specific requirements.
+        Hybrid Search endpoint is an evolution of basic /search endpoint that supports the same filters but returns data in a new format and adds support for the following features: - **Enhanced Response Format**: Returns SearchResponse with detailed explanations and metadata - **Hybrid Search Support**: Combines text and vector search methods with configurable weights - **Advanced Explanations**: Provides detailed scoring explanations including RRF (Reciprocal Rank Fusion) scores - **Configurable Scoring**: Supports field-specific scoring configurations and weights - **Search Result Metadata**: Includes explanations, RRF ranks, and original ranks for transparency
 
-        :param deep_search_search_request: (required)
-        :type deep_search_search_request: DeepSearchSearchRequest
+        :param deep_search_search_request_v2: (required)
+        :type deep_search_search_request_v2: DeepSearchSearchRequestV2
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
                                  timeout. It can also be a pair (tuple) of
@@ -242,8 +244,8 @@ class AISearchApi:
         :return: Returns the result object.
         """ # noqa: E501
 
-        _param = self._search_post_v2_deepsearch_search_post_serialize(
-            deep_search_search_request=deep_search_search_request,
+        _param = self.__search_hybrid_post_serialize(
+            deep_search_search_request_v2=deep_search_search_request_v2,
             _request_auth=_request_auth,
             _content_type=_content_type,
             _headers=_headers,
@@ -251,7 +253,7 @@ class AISearchApi:
         )
 
         _response_types_map: Dict[str, Optional[str]] = {
-            '200': "List[SearchResult]",
+            '200': "SearchResponse",
             '422': "HTTPValidationError",
         }
         response_data = await self.api_client.call_api(
@@ -261,9 +263,9 @@ class AISearchApi:
         return response_data.response
 
 
-    def _search_post_v2_deepsearch_search_post_serialize(
+    def __search_hybrid_post_serialize(
         self,
-        deep_search_search_request,
+        deep_search_search_request_v2,
         _request_auth,
         _content_type,
         _headers,
@@ -287,8 +289,282 @@ class AISearchApi:
         # process the header parameters
         # process the form parameters
         # process the body parameter
-        if deep_search_search_request is not None:
-            _body_params = deep_search_search_request
+        if deep_search_search_request_v2 is not None:
+            _body_params = deep_search_search_request_v2
+
+
+        # set the HTTP header `Accept`
+        if 'Accept' not in _header_params:
+            _header_params['Accept'] = self.api_client.select_header_accept(
+                [
+                    'application/json'
+                ]
+            )
+
+        # set the HTTP header `Content-Type`
+        if _content_type:
+            _header_params['Content-Type'] = _content_type
+        else:
+            _default_content_type = (
+                self.api_client.select_header_content_type(
+                    [
+                        'application/json'
+                    ]
+                )
+            )
+            if _default_content_type is not None:
+                _header_params['Content-Type'] = _default_content_type
+
+        # authentication setting
+        _auth_settings: List[str] = [
+            'APIKeyHeader', 
+            'HTTPBasic', 
+            'HTTPBearer'
+        ]
+
+        return self.api_client.param_serialize(
+            method='POST',
+            resource_path='/search_hybrid',
+            path_params=_path_params,
+            query_params=_query_params,
+            header_params=_header_params,
+            body=_body_params,
+            post_params=_form_params,
+            files=_files,
+            auth_settings=_auth_settings,
+            collection_formats=_collection_formats,
+            _host=_host,
+            _request_auth=_request_auth
+        )
+
+    @validate_call
+    async def search_post_v2_deepsearch_search_post(
+        self,
+        deep_search_search_request_v2: DeepSearchSearchRequestV2,
+        _request_timeout: Union[
+            None,
+            Annotated[StrictFloat, Field(gt=0)],
+            Tuple[
+                Annotated[StrictFloat, Field(gt=0)],
+                Annotated[StrictFloat, Field(gt=0)]
+            ]
+        ] = None,
+        _request_auth: Optional[Dict[StrictStr, Any]] = None,
+        _content_type: Optional[StrictStr] = None,
+        _headers: Optional[Dict[StrictStr, Any]] = None,
+        _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
+    ) -> List[DeepsearchApiRoutersV2ModelsSearchResult]:
+        """Search Post
+
+        All supported search parameters are available as body parameters.  Search endpoint enables comprehensive searches across images (e.g., .jpg, .png) and USD-based 3D models within various storage backends (Nucleus, S3, etc.). It enables users to use natural language, image similarity, and precise metadata criteria (file name, type, date, size, creator, etc.) to locate relevant content efficiently. Furthermore, when integrated with the Asset Graph Service, USD Search API extends its capabilities to include searches based on USD properties and spatial dimensions of 3D model bounding boxes, enhancing the ability to find assets that meet specific requirements.
+
+        :param deep_search_search_request_v2: (required)
+        :type deep_search_search_request_v2: DeepSearchSearchRequestV2
+        :param _request_timeout: timeout setting for this request. If one
+                                 number provided, it will be total request
+                                 timeout. It can also be a pair (tuple) of
+                                 (connection, read) timeouts.
+        :type _request_timeout: int, tuple(int, int), optional
+        :param _request_auth: set to override the auth_settings for an a single
+                              request; this effectively ignores the
+                              authentication in the spec for a single request.
+        :type _request_auth: dict, optional
+        :param _content_type: force content-type for the request.
+        :type _content_type: str, Optional
+        :param _headers: set to override the headers for a single
+                         request; this effectively ignores the headers
+                         in the spec for a single request.
+        :type _headers: dict, optional
+        :param _host_index: set to override the host_index for a single
+                            request; this effectively ignores the host_index
+                            in the spec for a single request.
+        :type _host_index: int, optional
+        :return: Returns the result object.
+        """ # noqa: E501
+
+        _param = self._search_post_v2_deepsearch_search_post_serialize(
+            deep_search_search_request_v2=deep_search_search_request_v2,
+            _request_auth=_request_auth,
+            _content_type=_content_type,
+            _headers=_headers,
+            _host_index=_host_index
+        )
+
+        _response_types_map: Dict[str, Optional[str]] = {
+            '200': "List[DeepsearchApiRoutersV2ModelsSearchResult]",
+            '422': "HTTPValidationError",
+        }
+        response_data = await self.api_client.call_api(
+            *_param,
+            _request_timeout=_request_timeout
+        )
+        await response_data.read()
+        return self.api_client.response_deserialize(
+            response_data=response_data,
+            response_types_map=_response_types_map,
+        ).data
+
+
+    @validate_call
+    async def search_post_v2_deepsearch_search_post_with_http_info(
+        self,
+        deep_search_search_request_v2: DeepSearchSearchRequestV2,
+        _request_timeout: Union[
+            None,
+            Annotated[StrictFloat, Field(gt=0)],
+            Tuple[
+                Annotated[StrictFloat, Field(gt=0)],
+                Annotated[StrictFloat, Field(gt=0)]
+            ]
+        ] = None,
+        _request_auth: Optional[Dict[StrictStr, Any]] = None,
+        _content_type: Optional[StrictStr] = None,
+        _headers: Optional[Dict[StrictStr, Any]] = None,
+        _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
+    ) -> ApiResponse[List[DeepsearchApiRoutersV2ModelsSearchResult]]:
+        """Search Post
+
+        All supported search parameters are available as body parameters.  Search endpoint enables comprehensive searches across images (e.g., .jpg, .png) and USD-based 3D models within various storage backends (Nucleus, S3, etc.). It enables users to use natural language, image similarity, and precise metadata criteria (file name, type, date, size, creator, etc.) to locate relevant content efficiently. Furthermore, when integrated with the Asset Graph Service, USD Search API extends its capabilities to include searches based on USD properties and spatial dimensions of 3D model bounding boxes, enhancing the ability to find assets that meet specific requirements.
+
+        :param deep_search_search_request_v2: (required)
+        :type deep_search_search_request_v2: DeepSearchSearchRequestV2
+        :param _request_timeout: timeout setting for this request. If one
+                                 number provided, it will be total request
+                                 timeout. It can also be a pair (tuple) of
+                                 (connection, read) timeouts.
+        :type _request_timeout: int, tuple(int, int), optional
+        :param _request_auth: set to override the auth_settings for an a single
+                              request; this effectively ignores the
+                              authentication in the spec for a single request.
+        :type _request_auth: dict, optional
+        :param _content_type: force content-type for the request.
+        :type _content_type: str, Optional
+        :param _headers: set to override the headers for a single
+                         request; this effectively ignores the headers
+                         in the spec for a single request.
+        :type _headers: dict, optional
+        :param _host_index: set to override the host_index for a single
+                            request; this effectively ignores the host_index
+                            in the spec for a single request.
+        :type _host_index: int, optional
+        :return: Returns the result object.
+        """ # noqa: E501
+
+        _param = self._search_post_v2_deepsearch_search_post_serialize(
+            deep_search_search_request_v2=deep_search_search_request_v2,
+            _request_auth=_request_auth,
+            _content_type=_content_type,
+            _headers=_headers,
+            _host_index=_host_index
+        )
+
+        _response_types_map: Dict[str, Optional[str]] = {
+            '200': "List[DeepsearchApiRoutersV2ModelsSearchResult]",
+            '422': "HTTPValidationError",
+        }
+        response_data = await self.api_client.call_api(
+            *_param,
+            _request_timeout=_request_timeout
+        )
+        await response_data.read()
+        return self.api_client.response_deserialize(
+            response_data=response_data,
+            response_types_map=_response_types_map,
+        )
+
+
+    @validate_call
+    async def search_post_v2_deepsearch_search_post_without_preload_content(
+        self,
+        deep_search_search_request_v2: DeepSearchSearchRequestV2,
+        _request_timeout: Union[
+            None,
+            Annotated[StrictFloat, Field(gt=0)],
+            Tuple[
+                Annotated[StrictFloat, Field(gt=0)],
+                Annotated[StrictFloat, Field(gt=0)]
+            ]
+        ] = None,
+        _request_auth: Optional[Dict[StrictStr, Any]] = None,
+        _content_type: Optional[StrictStr] = None,
+        _headers: Optional[Dict[StrictStr, Any]] = None,
+        _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
+    ) -> RESTResponseType:
+        """Search Post
+
+        All supported search parameters are available as body parameters.  Search endpoint enables comprehensive searches across images (e.g., .jpg, .png) and USD-based 3D models within various storage backends (Nucleus, S3, etc.). It enables users to use natural language, image similarity, and precise metadata criteria (file name, type, date, size, creator, etc.) to locate relevant content efficiently. Furthermore, when integrated with the Asset Graph Service, USD Search API extends its capabilities to include searches based on USD properties and spatial dimensions of 3D model bounding boxes, enhancing the ability to find assets that meet specific requirements.
+
+        :param deep_search_search_request_v2: (required)
+        :type deep_search_search_request_v2: DeepSearchSearchRequestV2
+        :param _request_timeout: timeout setting for this request. If one
+                                 number provided, it will be total request
+                                 timeout. It can also be a pair (tuple) of
+                                 (connection, read) timeouts.
+        :type _request_timeout: int, tuple(int, int), optional
+        :param _request_auth: set to override the auth_settings for an a single
+                              request; this effectively ignores the
+                              authentication in the spec for a single request.
+        :type _request_auth: dict, optional
+        :param _content_type: force content-type for the request.
+        :type _content_type: str, Optional
+        :param _headers: set to override the headers for a single
+                         request; this effectively ignores the headers
+                         in the spec for a single request.
+        :type _headers: dict, optional
+        :param _host_index: set to override the host_index for a single
+                            request; this effectively ignores the host_index
+                            in the spec for a single request.
+        :type _host_index: int, optional
+        :return: Returns the result object.
+        """ # noqa: E501
+
+        _param = self._search_post_v2_deepsearch_search_post_serialize(
+            deep_search_search_request_v2=deep_search_search_request_v2,
+            _request_auth=_request_auth,
+            _content_type=_content_type,
+            _headers=_headers,
+            _host_index=_host_index
+        )
+
+        _response_types_map: Dict[str, Optional[str]] = {
+            '200': "List[DeepsearchApiRoutersV2ModelsSearchResult]",
+            '422': "HTTPValidationError",
+        }
+        response_data = await self.api_client.call_api(
+            *_param,
+            _request_timeout=_request_timeout
+        )
+        return response_data.response
+
+
+    def _search_post_v2_deepsearch_search_post_serialize(
+        self,
+        deep_search_search_request_v2,
+        _request_auth,
+        _content_type,
+        _headers,
+        _host_index,
+    ) -> RequestSerialized:
+
+        _host = None
+
+        _collection_formats: Dict[str, str] = {
+        }
+
+        _path_params: Dict[str, str] = {}
+        _query_params: List[Tuple[str, str]] = []
+        _header_params: Dict[str, Optional[str]] = _headers or {}
+        _form_params: List[Tuple[str, str]] = []
+        _files: Dict[str, Union[str, bytes]] = {}
+        _body_params: Optional[bytes] = None
+
+        # process the path parameters
+        # process the query parameters
+        # process the header parameters
+        # process the form parameters
+        # process the body parameter
+        if deep_search_search_request_v2 is not None:
+            _body_params = deep_search_search_request_v2
 
 
         # set the HTTP header `Accept`
@@ -347,22 +623,24 @@ class AISearchApi:
         exclude_file_name: Annotated[Optional[StrictStr], Field(description="Exclude results by asset file name, allowing partial matches. Use wildcards: `*` for any number of characters, `?` for a single character. Separate terms with `,` for OR and `;` for AND.")] = None,
         file_extension_include: Annotated[Optional[StrictStr], Field(description="Filter results by file extension. Use wildcards: `*` for any number of characters, `?` for a single character. Separate terms with `,` for OR and `;` for AND.")] = None,
         file_extension_exclude: Annotated[Optional[StrictStr], Field(description="Exclude results by file extension. Use wildcards: `*` for any number of characters, `?` for a single character. Separate terms with `,` for OR and `;` for AND.")] = None,
-        created_after: Annotated[Optional[Annotated[str, Field(strict=True)]], Field(description="Filter results to only include assets created after a specified date")] = None,
-        created_before: Annotated[Optional[Annotated[str, Field(strict=True)]], Field(description="Filter results to only include assets created before a specified date")] = None,
-        modified_after: Annotated[Optional[Annotated[str, Field(strict=True)]], Field(description="Filter results to only include assets modified after a specified date")] = None,
-        modified_before: Annotated[Optional[Annotated[str, Field(strict=True)]], Field(description="Filter results to only include assets modified before a specified date")] = None,
+        created_after: Annotated[Optional[StrictStr], Field(description="Filter results to only include assets created after a specified date")] = None,
+        created_before: Annotated[Optional[StrictStr], Field(description="Filter results to only include assets created before a specified date")] = None,
+        modified_after: Annotated[Optional[StrictStr], Field(description="Filter results to only include assets modified after a specified date")] = None,
+        modified_before: Annotated[Optional[StrictStr], Field(description="Filter results to only include assets modified before a specified date")] = None,
         file_size_greater_than: Annotated[Optional[Annotated[str, Field(strict=True)]], Field(description="Filter results to only include files larger than a specific size")] = None,
         file_size_less_than: Annotated[Optional[Annotated[str, Field(strict=True)]], Field(description="Filter results to only include files smaller than a specific size")] = None,
         created_by: Annotated[Optional[StrictStr], Field(description="Filter results to only include assets created by a specific user. In case AWS S3 bucket is used as a storage backend, this field corresponds to the owner's ID. In case of an Omniverse Nucleus server, this field may depend on the configuration, but typically corresponds to user email.")] = None,
         exclude_created_by: Annotated[Optional[StrictStr], Field(description="Exclude assets created by a specific user from the results")] = None,
         modified_by: Annotated[Optional[StrictStr], Field(description="Filter results to only include assets modified by a specific user. In the case, when AWS S3 bucket is used as a storage backend, this field corresponds to the owner's ID. In case of an Omniverse Nucleus server, this field may depend on the configuration, but typically corresponds to user email.")] = None,
         exclude_modified_by: Annotated[Optional[StrictStr], Field(description="Exclude assets modified by a specific user from the results")] = None,
-        similarity_threshold: Annotated[Optional[Union[Annotated[float, Field(le=2, strict=True, ge=0)], Annotated[int, Field(le=2, strict=True, ge=0)]]], Field(description="Set the similarity threshold for embedding-based searches. This functionality allows filterring duplicates and returning only those results that are different from each other. Assets are considered to be duplicates if the cosine distance betwen the embeddings a smaller than the similarity_threshold value, which could be in the [0, 2] range.")] = None,
+        similarity_threshold: Annotated[Optional[Union[Annotated[float, Field(le=2, strict=True, ge=0)], Annotated[int, Field(le=2, strict=True, ge=0)]]], Field(description="Set the similarity threshold for embedding-based searches. This functionality allows filtering duplicates and returning only those results that are different from each other. Assets are considered to be duplicates if the cosine distance betwen the embeddings a smaller than the similarity_threshold value, which could be in the [0, 2] range.")] = None,
         cutoff_threshold: Annotated[Optional[Union[Annotated[float, Field(strict=True, ge=0)], Annotated[int, Field(strict=True, ge=0)]]], Field(description="Set the cutoff threshold for embedding-based searches")] = None,
         search_path: Annotated[Optional[StrictStr], Field(description="Specify the search path within the storage backend. This path should not contain the storage backend URL, just the asset path on the storage backend. Use wildcards: `*` for any number of characters, `?` for a single character. Separate terms with `,` for OR and `;` for AND.")] = None,
         exclude_search_path: Annotated[Optional[StrictStr], Field(description="Specify the search path within the storage backend. This path should not contain the storage backend URL, just the asset path on the storage backend. Use wildcards: `*` for any number of characters, `?` for a single character. Separate terms with `,` for OR and `;` for AND.")] = None,
+        filter_url_regexp: Annotated[Optional[StrictStr], Field(description="Specify an asset URL filter in the [Lucene Regexp format](https://www.elastic.co/guide/en/elasticsearch/reference/5.6/query-dsl-regexp-query.html#regexp-syntax).")] = None,
         search_in_scene: Annotated[Optional[StrictStr], Field(description="Conduct the search within a specific scene. Provide the full URL for the asset including the storage backend URL prefix.")] = None,
-        filter_by_properties: Annotated[Optional[StrictStr], Field(description="Filter assets by USD attributes where at least one root prim matches (note: only supported for a subset of attributes indexed). Format: `attribute1=abc,attribute2=456`")] = None,
+        filter_by_properties: Annotated[Optional[StrictStr], Field(description="Filter assets by USD attributes where at least one root prim matches (note: only supported for a subset of attributes indexed). Format: `attribute1=abc,attribute2=456`, to search for key only use `key=`, and to search for value only `=value`")] = None,
+        exclude_filter_by_properties: Annotated[Optional[StrictStr], Field(description="Exclude assets by USD attributes (note: only supported for a subset of attributes indexed). Format: `attribute1=abc,attribute2=456`")] = None,
         min_bbox_x: Annotated[Optional[Union[Annotated[float, Field(strict=True, ge=0)], Annotated[int, Field(strict=True, ge=0)]]], Field(description="Filter by minimum X axis dimension of the asset's bounding box")] = None,
         min_bbox_y: Annotated[Optional[Union[Annotated[float, Field(strict=True, ge=0)], Annotated[int, Field(strict=True, ge=0)]]], Field(description="Filter by minimum Y axis dimension of the asset's bounding box")] = None,
         min_bbox_z: Annotated[Optional[Union[Annotated[float, Field(strict=True, ge=0)], Annotated[int, Field(strict=True, ge=0)]]], Field(description="Filter by minimum Z axis dimension of the asset's bounding box")] = None,
@@ -375,10 +653,11 @@ class AISearchApi:
         return_default_prims: Annotated[Optional[StrictBool], Field(description="Return default prims if set to True")] = None,
         return_predictions: Annotated[Optional[StrictBool], Field(description="Return predictions if set to True")] = None,
         return_in_scene_instances_prims: Annotated[Optional[StrictBool], Field(description="[in-scene search only] Return prims of instances of objects found in the scene")] = None,
-        embedding_knn_search_method: Annotated[Optional[Any], Field(description="Search method, approximate should be faster but is less accurate. Default is exact")] = None,
+        embedding_knn_search_method: Annotated[Optional[SearchMethod], Field(description="Search method, approximate should be faster but is less accurate. Default is exact")] = None,
         limit: Annotated[Optional[Annotated[int, Field(le=10000, strict=True)]], Field(description="Set the maximum number of results to return from the search, default is 32")] = None,
         vision_metadata: Annotated[Optional[StrictStr], Field(description="Uses a keyword match query on metadata fields that were generated using Vision Language Models")] = None,
         return_vision_generated_metadata: Annotated[Optional[StrictBool], Field(description="Returns the metadata fields that were generated using Vision Language Models")] = None,
+        return_inner_hits: Annotated[Optional[StrictBool], Field(description="Return inner hits from nested queries for debugging and detailed scoring")] = None,
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -391,10 +670,10 @@ class AISearchApi:
         _content_type: Optional[StrictStr] = None,
         _headers: Optional[Dict[StrictStr, Any]] = None,
         _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
-    ) -> List[SearchResult]:
+    ) -> List[DeepsearchApiRoutersV2ModelsSearchResult]:
         """Search
 
-        Version 2 of the DeepSearch API search endpoint. All supported search parameters are available as query parameters. It *does not* support DeepSearch query language.  Search endpoint enables comprehensive searches across images (e.g., .jpg, .png) and USD-based 3D models within various storage backends (Nucleus, S3, etc.). It enables users to use natural language, image similarity, and precise metadata criteria (file name, type, date, size, creator, etc.) to locate relevant content efficiently. Furthermore, when integrated with the Asset Graph Service, DeepSearch extends its capabilities to include searches based on USD properties and spatial dimensions of 3D model bounding boxes, enhancing the ability to find assets that meet specific requirements.
+        All supported search parameters are available as query parameters.  Search endpoint enables comprehensive searches across images (e.g., .jpg, .png) and USD-based 3D models within various storage backends (Nucleus, S3, etc.). It enables users to use natural language, image similarity, and precise metadata criteria (file name, type, date, size, creator, etc.) to locate relevant content efficiently. Furthermore, when integrated with the Asset Graph Service, USD Search API extends its capabilities to include searches based on USD properties and spatial dimensions of 3D model bounding boxes, enhancing the ability to find assets that meet specific requirements.
 
         :param description: Conduct text-based searches powered by AI
         :type description: str
@@ -428,7 +707,7 @@ class AISearchApi:
         :type modified_by: str
         :param exclude_modified_by: Exclude assets modified by a specific user from the results
         :type exclude_modified_by: str
-        :param similarity_threshold: Set the similarity threshold for embedding-based searches. This functionality allows filterring duplicates and returning only those results that are different from each other. Assets are considered to be duplicates if the cosine distance betwen the embeddings a smaller than the similarity_threshold value, which could be in the [0, 2] range.
+        :param similarity_threshold: Set the similarity threshold for embedding-based searches. This functionality allows filtering duplicates and returning only those results that are different from each other. Assets are considered to be duplicates if the cosine distance betwen the embeddings a smaller than the similarity_threshold value, which could be in the [0, 2] range.
         :type similarity_threshold: float
         :param cutoff_threshold: Set the cutoff threshold for embedding-based searches
         :type cutoff_threshold: float
@@ -436,10 +715,14 @@ class AISearchApi:
         :type search_path: str
         :param exclude_search_path: Specify the search path within the storage backend. This path should not contain the storage backend URL, just the asset path on the storage backend. Use wildcards: `*` for any number of characters, `?` for a single character. Separate terms with `,` for OR and `;` for AND.
         :type exclude_search_path: str
+        :param filter_url_regexp: Specify an asset URL filter in the [Lucene Regexp format](https://www.elastic.co/guide/en/elasticsearch/reference/5.6/query-dsl-regexp-query.html#regexp-syntax).
+        :type filter_url_regexp: str
         :param search_in_scene: Conduct the search within a specific scene. Provide the full URL for the asset including the storage backend URL prefix.
         :type search_in_scene: str
-        :param filter_by_properties: Filter assets by USD attributes where at least one root prim matches (note: only supported for a subset of attributes indexed). Format: `attribute1=abc,attribute2=456`
+        :param filter_by_properties: Filter assets by USD attributes where at least one root prim matches (note: only supported for a subset of attributes indexed). Format: `attribute1=abc,attribute2=456`, to search for key only use `key=`, and to search for value only `=value`
         :type filter_by_properties: str
+        :param exclude_filter_by_properties: Exclude assets by USD attributes (note: only supported for a subset of attributes indexed). Format: `attribute1=abc,attribute2=456`
+        :type exclude_filter_by_properties: str
         :param min_bbox_x: Filter by minimum X axis dimension of the asset's bounding box
         :type min_bbox_x: float
         :param min_bbox_y: Filter by minimum Y axis dimension of the asset's bounding box
@@ -472,6 +755,8 @@ class AISearchApi:
         :type vision_metadata: str
         :param return_vision_generated_metadata: Returns the metadata fields that were generated using Vision Language Models
         :type return_vision_generated_metadata: bool
+        :param return_inner_hits: Return inner hits from nested queries for debugging and detailed scoring
+        :type return_inner_hits: bool
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
                                  timeout. It can also be a pair (tuple) of
@@ -515,8 +800,10 @@ class AISearchApi:
             cutoff_threshold=cutoff_threshold,
             search_path=search_path,
             exclude_search_path=exclude_search_path,
+            filter_url_regexp=filter_url_regexp,
             search_in_scene=search_in_scene,
             filter_by_properties=filter_by_properties,
+            exclude_filter_by_properties=exclude_filter_by_properties,
             min_bbox_x=min_bbox_x,
             min_bbox_y=min_bbox_y,
             min_bbox_z=min_bbox_z,
@@ -533,6 +820,7 @@ class AISearchApi:
             limit=limit,
             vision_metadata=vision_metadata,
             return_vision_generated_metadata=return_vision_generated_metadata,
+            return_inner_hits=return_inner_hits,
             _request_auth=_request_auth,
             _content_type=_content_type,
             _headers=_headers,
@@ -540,7 +828,7 @@ class AISearchApi:
         )
 
         _response_types_map: Dict[str, Optional[str]] = {
-            '200': "List[SearchResult]",
+            '200': "List[DeepsearchApiRoutersV2ModelsSearchResult]",
             '422': "HTTPValidationError",
         }
         response_data = await self.api_client.call_api(
@@ -563,22 +851,24 @@ class AISearchApi:
         exclude_file_name: Annotated[Optional[StrictStr], Field(description="Exclude results by asset file name, allowing partial matches. Use wildcards: `*` for any number of characters, `?` for a single character. Separate terms with `,` for OR and `;` for AND.")] = None,
         file_extension_include: Annotated[Optional[StrictStr], Field(description="Filter results by file extension. Use wildcards: `*` for any number of characters, `?` for a single character. Separate terms with `,` for OR and `;` for AND.")] = None,
         file_extension_exclude: Annotated[Optional[StrictStr], Field(description="Exclude results by file extension. Use wildcards: `*` for any number of characters, `?` for a single character. Separate terms with `,` for OR and `;` for AND.")] = None,
-        created_after: Annotated[Optional[Annotated[str, Field(strict=True)]], Field(description="Filter results to only include assets created after a specified date")] = None,
-        created_before: Annotated[Optional[Annotated[str, Field(strict=True)]], Field(description="Filter results to only include assets created before a specified date")] = None,
-        modified_after: Annotated[Optional[Annotated[str, Field(strict=True)]], Field(description="Filter results to only include assets modified after a specified date")] = None,
-        modified_before: Annotated[Optional[Annotated[str, Field(strict=True)]], Field(description="Filter results to only include assets modified before a specified date")] = None,
+        created_after: Annotated[Optional[StrictStr], Field(description="Filter results to only include assets created after a specified date")] = None,
+        created_before: Annotated[Optional[StrictStr], Field(description="Filter results to only include assets created before a specified date")] = None,
+        modified_after: Annotated[Optional[StrictStr], Field(description="Filter results to only include assets modified after a specified date")] = None,
+        modified_before: Annotated[Optional[StrictStr], Field(description="Filter results to only include assets modified before a specified date")] = None,
         file_size_greater_than: Annotated[Optional[Annotated[str, Field(strict=True)]], Field(description="Filter results to only include files larger than a specific size")] = None,
         file_size_less_than: Annotated[Optional[Annotated[str, Field(strict=True)]], Field(description="Filter results to only include files smaller than a specific size")] = None,
         created_by: Annotated[Optional[StrictStr], Field(description="Filter results to only include assets created by a specific user. In case AWS S3 bucket is used as a storage backend, this field corresponds to the owner's ID. In case of an Omniverse Nucleus server, this field may depend on the configuration, but typically corresponds to user email.")] = None,
         exclude_created_by: Annotated[Optional[StrictStr], Field(description="Exclude assets created by a specific user from the results")] = None,
         modified_by: Annotated[Optional[StrictStr], Field(description="Filter results to only include assets modified by a specific user. In the case, when AWS S3 bucket is used as a storage backend, this field corresponds to the owner's ID. In case of an Omniverse Nucleus server, this field may depend on the configuration, but typically corresponds to user email.")] = None,
         exclude_modified_by: Annotated[Optional[StrictStr], Field(description="Exclude assets modified by a specific user from the results")] = None,
-        similarity_threshold: Annotated[Optional[Union[Annotated[float, Field(le=2, strict=True, ge=0)], Annotated[int, Field(le=2, strict=True, ge=0)]]], Field(description="Set the similarity threshold for embedding-based searches. This functionality allows filterring duplicates and returning only those results that are different from each other. Assets are considered to be duplicates if the cosine distance betwen the embeddings a smaller than the similarity_threshold value, which could be in the [0, 2] range.")] = None,
+        similarity_threshold: Annotated[Optional[Union[Annotated[float, Field(le=2, strict=True, ge=0)], Annotated[int, Field(le=2, strict=True, ge=0)]]], Field(description="Set the similarity threshold for embedding-based searches. This functionality allows filtering duplicates and returning only those results that are different from each other. Assets are considered to be duplicates if the cosine distance betwen the embeddings a smaller than the similarity_threshold value, which could be in the [0, 2] range.")] = None,
         cutoff_threshold: Annotated[Optional[Union[Annotated[float, Field(strict=True, ge=0)], Annotated[int, Field(strict=True, ge=0)]]], Field(description="Set the cutoff threshold for embedding-based searches")] = None,
         search_path: Annotated[Optional[StrictStr], Field(description="Specify the search path within the storage backend. This path should not contain the storage backend URL, just the asset path on the storage backend. Use wildcards: `*` for any number of characters, `?` for a single character. Separate terms with `,` for OR and `;` for AND.")] = None,
         exclude_search_path: Annotated[Optional[StrictStr], Field(description="Specify the search path within the storage backend. This path should not contain the storage backend URL, just the asset path on the storage backend. Use wildcards: `*` for any number of characters, `?` for a single character. Separate terms with `,` for OR and `;` for AND.")] = None,
+        filter_url_regexp: Annotated[Optional[StrictStr], Field(description="Specify an asset URL filter in the [Lucene Regexp format](https://www.elastic.co/guide/en/elasticsearch/reference/5.6/query-dsl-regexp-query.html#regexp-syntax).")] = None,
         search_in_scene: Annotated[Optional[StrictStr], Field(description="Conduct the search within a specific scene. Provide the full URL for the asset including the storage backend URL prefix.")] = None,
-        filter_by_properties: Annotated[Optional[StrictStr], Field(description="Filter assets by USD attributes where at least one root prim matches (note: only supported for a subset of attributes indexed). Format: `attribute1=abc,attribute2=456`")] = None,
+        filter_by_properties: Annotated[Optional[StrictStr], Field(description="Filter assets by USD attributes where at least one root prim matches (note: only supported for a subset of attributes indexed). Format: `attribute1=abc,attribute2=456`, to search for key only use `key=`, and to search for value only `=value`")] = None,
+        exclude_filter_by_properties: Annotated[Optional[StrictStr], Field(description="Exclude assets by USD attributes (note: only supported for a subset of attributes indexed). Format: `attribute1=abc,attribute2=456`")] = None,
         min_bbox_x: Annotated[Optional[Union[Annotated[float, Field(strict=True, ge=0)], Annotated[int, Field(strict=True, ge=0)]]], Field(description="Filter by minimum X axis dimension of the asset's bounding box")] = None,
         min_bbox_y: Annotated[Optional[Union[Annotated[float, Field(strict=True, ge=0)], Annotated[int, Field(strict=True, ge=0)]]], Field(description="Filter by minimum Y axis dimension of the asset's bounding box")] = None,
         min_bbox_z: Annotated[Optional[Union[Annotated[float, Field(strict=True, ge=0)], Annotated[int, Field(strict=True, ge=0)]]], Field(description="Filter by minimum Z axis dimension of the asset's bounding box")] = None,
@@ -591,10 +881,11 @@ class AISearchApi:
         return_default_prims: Annotated[Optional[StrictBool], Field(description="Return default prims if set to True")] = None,
         return_predictions: Annotated[Optional[StrictBool], Field(description="Return predictions if set to True")] = None,
         return_in_scene_instances_prims: Annotated[Optional[StrictBool], Field(description="[in-scene search only] Return prims of instances of objects found in the scene")] = None,
-        embedding_knn_search_method: Annotated[Optional[Any], Field(description="Search method, approximate should be faster but is less accurate. Default is exact")] = None,
+        embedding_knn_search_method: Annotated[Optional[SearchMethod], Field(description="Search method, approximate should be faster but is less accurate. Default is exact")] = None,
         limit: Annotated[Optional[Annotated[int, Field(le=10000, strict=True)]], Field(description="Set the maximum number of results to return from the search, default is 32")] = None,
         vision_metadata: Annotated[Optional[StrictStr], Field(description="Uses a keyword match query on metadata fields that were generated using Vision Language Models")] = None,
         return_vision_generated_metadata: Annotated[Optional[StrictBool], Field(description="Returns the metadata fields that were generated using Vision Language Models")] = None,
+        return_inner_hits: Annotated[Optional[StrictBool], Field(description="Return inner hits from nested queries for debugging and detailed scoring")] = None,
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -607,10 +898,10 @@ class AISearchApi:
         _content_type: Optional[StrictStr] = None,
         _headers: Optional[Dict[StrictStr, Any]] = None,
         _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
-    ) -> ApiResponse[List[SearchResult]]:
+    ) -> ApiResponse[List[DeepsearchApiRoutersV2ModelsSearchResult]]:
         """Search
 
-        Version 2 of the DeepSearch API search endpoint. All supported search parameters are available as query parameters. It *does not* support DeepSearch query language.  Search endpoint enables comprehensive searches across images (e.g., .jpg, .png) and USD-based 3D models within various storage backends (Nucleus, S3, etc.). It enables users to use natural language, image similarity, and precise metadata criteria (file name, type, date, size, creator, etc.) to locate relevant content efficiently. Furthermore, when integrated with the Asset Graph Service, DeepSearch extends its capabilities to include searches based on USD properties and spatial dimensions of 3D model bounding boxes, enhancing the ability to find assets that meet specific requirements.
+        All supported search parameters are available as query parameters.  Search endpoint enables comprehensive searches across images (e.g., .jpg, .png) and USD-based 3D models within various storage backends (Nucleus, S3, etc.). It enables users to use natural language, image similarity, and precise metadata criteria (file name, type, date, size, creator, etc.) to locate relevant content efficiently. Furthermore, when integrated with the Asset Graph Service, USD Search API extends its capabilities to include searches based on USD properties and spatial dimensions of 3D model bounding boxes, enhancing the ability to find assets that meet specific requirements.
 
         :param description: Conduct text-based searches powered by AI
         :type description: str
@@ -644,7 +935,7 @@ class AISearchApi:
         :type modified_by: str
         :param exclude_modified_by: Exclude assets modified by a specific user from the results
         :type exclude_modified_by: str
-        :param similarity_threshold: Set the similarity threshold for embedding-based searches. This functionality allows filterring duplicates and returning only those results that are different from each other. Assets are considered to be duplicates if the cosine distance betwen the embeddings a smaller than the similarity_threshold value, which could be in the [0, 2] range.
+        :param similarity_threshold: Set the similarity threshold for embedding-based searches. This functionality allows filtering duplicates and returning only those results that are different from each other. Assets are considered to be duplicates if the cosine distance betwen the embeddings a smaller than the similarity_threshold value, which could be in the [0, 2] range.
         :type similarity_threshold: float
         :param cutoff_threshold: Set the cutoff threshold for embedding-based searches
         :type cutoff_threshold: float
@@ -652,10 +943,14 @@ class AISearchApi:
         :type search_path: str
         :param exclude_search_path: Specify the search path within the storage backend. This path should not contain the storage backend URL, just the asset path on the storage backend. Use wildcards: `*` for any number of characters, `?` for a single character. Separate terms with `,` for OR and `;` for AND.
         :type exclude_search_path: str
+        :param filter_url_regexp: Specify an asset URL filter in the [Lucene Regexp format](https://www.elastic.co/guide/en/elasticsearch/reference/5.6/query-dsl-regexp-query.html#regexp-syntax).
+        :type filter_url_regexp: str
         :param search_in_scene: Conduct the search within a specific scene. Provide the full URL for the asset including the storage backend URL prefix.
         :type search_in_scene: str
-        :param filter_by_properties: Filter assets by USD attributes where at least one root prim matches (note: only supported for a subset of attributes indexed). Format: `attribute1=abc,attribute2=456`
+        :param filter_by_properties: Filter assets by USD attributes where at least one root prim matches (note: only supported for a subset of attributes indexed). Format: `attribute1=abc,attribute2=456`, to search for key only use `key=`, and to search for value only `=value`
         :type filter_by_properties: str
+        :param exclude_filter_by_properties: Exclude assets by USD attributes (note: only supported for a subset of attributes indexed). Format: `attribute1=abc,attribute2=456`
+        :type exclude_filter_by_properties: str
         :param min_bbox_x: Filter by minimum X axis dimension of the asset's bounding box
         :type min_bbox_x: float
         :param min_bbox_y: Filter by minimum Y axis dimension of the asset's bounding box
@@ -688,6 +983,8 @@ class AISearchApi:
         :type vision_metadata: str
         :param return_vision_generated_metadata: Returns the metadata fields that were generated using Vision Language Models
         :type return_vision_generated_metadata: bool
+        :param return_inner_hits: Return inner hits from nested queries for debugging and detailed scoring
+        :type return_inner_hits: bool
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
                                  timeout. It can also be a pair (tuple) of
@@ -731,8 +1028,10 @@ class AISearchApi:
             cutoff_threshold=cutoff_threshold,
             search_path=search_path,
             exclude_search_path=exclude_search_path,
+            filter_url_regexp=filter_url_regexp,
             search_in_scene=search_in_scene,
             filter_by_properties=filter_by_properties,
+            exclude_filter_by_properties=exclude_filter_by_properties,
             min_bbox_x=min_bbox_x,
             min_bbox_y=min_bbox_y,
             min_bbox_z=min_bbox_z,
@@ -749,6 +1048,7 @@ class AISearchApi:
             limit=limit,
             vision_metadata=vision_metadata,
             return_vision_generated_metadata=return_vision_generated_metadata,
+            return_inner_hits=return_inner_hits,
             _request_auth=_request_auth,
             _content_type=_content_type,
             _headers=_headers,
@@ -756,7 +1056,7 @@ class AISearchApi:
         )
 
         _response_types_map: Dict[str, Optional[str]] = {
-            '200': "List[SearchResult]",
+            '200': "List[DeepsearchApiRoutersV2ModelsSearchResult]",
             '422': "HTTPValidationError",
         }
         response_data = await self.api_client.call_api(
@@ -779,22 +1079,24 @@ class AISearchApi:
         exclude_file_name: Annotated[Optional[StrictStr], Field(description="Exclude results by asset file name, allowing partial matches. Use wildcards: `*` for any number of characters, `?` for a single character. Separate terms with `,` for OR and `;` for AND.")] = None,
         file_extension_include: Annotated[Optional[StrictStr], Field(description="Filter results by file extension. Use wildcards: `*` for any number of characters, `?` for a single character. Separate terms with `,` for OR and `;` for AND.")] = None,
         file_extension_exclude: Annotated[Optional[StrictStr], Field(description="Exclude results by file extension. Use wildcards: `*` for any number of characters, `?` for a single character. Separate terms with `,` for OR and `;` for AND.")] = None,
-        created_after: Annotated[Optional[Annotated[str, Field(strict=True)]], Field(description="Filter results to only include assets created after a specified date")] = None,
-        created_before: Annotated[Optional[Annotated[str, Field(strict=True)]], Field(description="Filter results to only include assets created before a specified date")] = None,
-        modified_after: Annotated[Optional[Annotated[str, Field(strict=True)]], Field(description="Filter results to only include assets modified after a specified date")] = None,
-        modified_before: Annotated[Optional[Annotated[str, Field(strict=True)]], Field(description="Filter results to only include assets modified before a specified date")] = None,
+        created_after: Annotated[Optional[StrictStr], Field(description="Filter results to only include assets created after a specified date")] = None,
+        created_before: Annotated[Optional[StrictStr], Field(description="Filter results to only include assets created before a specified date")] = None,
+        modified_after: Annotated[Optional[StrictStr], Field(description="Filter results to only include assets modified after a specified date")] = None,
+        modified_before: Annotated[Optional[StrictStr], Field(description="Filter results to only include assets modified before a specified date")] = None,
         file_size_greater_than: Annotated[Optional[Annotated[str, Field(strict=True)]], Field(description="Filter results to only include files larger than a specific size")] = None,
         file_size_less_than: Annotated[Optional[Annotated[str, Field(strict=True)]], Field(description="Filter results to only include files smaller than a specific size")] = None,
         created_by: Annotated[Optional[StrictStr], Field(description="Filter results to only include assets created by a specific user. In case AWS S3 bucket is used as a storage backend, this field corresponds to the owner's ID. In case of an Omniverse Nucleus server, this field may depend on the configuration, but typically corresponds to user email.")] = None,
         exclude_created_by: Annotated[Optional[StrictStr], Field(description="Exclude assets created by a specific user from the results")] = None,
         modified_by: Annotated[Optional[StrictStr], Field(description="Filter results to only include assets modified by a specific user. In the case, when AWS S3 bucket is used as a storage backend, this field corresponds to the owner's ID. In case of an Omniverse Nucleus server, this field may depend on the configuration, but typically corresponds to user email.")] = None,
         exclude_modified_by: Annotated[Optional[StrictStr], Field(description="Exclude assets modified by a specific user from the results")] = None,
-        similarity_threshold: Annotated[Optional[Union[Annotated[float, Field(le=2, strict=True, ge=0)], Annotated[int, Field(le=2, strict=True, ge=0)]]], Field(description="Set the similarity threshold for embedding-based searches. This functionality allows filterring duplicates and returning only those results that are different from each other. Assets are considered to be duplicates if the cosine distance betwen the embeddings a smaller than the similarity_threshold value, which could be in the [0, 2] range.")] = None,
+        similarity_threshold: Annotated[Optional[Union[Annotated[float, Field(le=2, strict=True, ge=0)], Annotated[int, Field(le=2, strict=True, ge=0)]]], Field(description="Set the similarity threshold for embedding-based searches. This functionality allows filtering duplicates and returning only those results that are different from each other. Assets are considered to be duplicates if the cosine distance betwen the embeddings a smaller than the similarity_threshold value, which could be in the [0, 2] range.")] = None,
         cutoff_threshold: Annotated[Optional[Union[Annotated[float, Field(strict=True, ge=0)], Annotated[int, Field(strict=True, ge=0)]]], Field(description="Set the cutoff threshold for embedding-based searches")] = None,
         search_path: Annotated[Optional[StrictStr], Field(description="Specify the search path within the storage backend. This path should not contain the storage backend URL, just the asset path on the storage backend. Use wildcards: `*` for any number of characters, `?` for a single character. Separate terms with `,` for OR and `;` for AND.")] = None,
         exclude_search_path: Annotated[Optional[StrictStr], Field(description="Specify the search path within the storage backend. This path should not contain the storage backend URL, just the asset path on the storage backend. Use wildcards: `*` for any number of characters, `?` for a single character. Separate terms with `,` for OR and `;` for AND.")] = None,
+        filter_url_regexp: Annotated[Optional[StrictStr], Field(description="Specify an asset URL filter in the [Lucene Regexp format](https://www.elastic.co/guide/en/elasticsearch/reference/5.6/query-dsl-regexp-query.html#regexp-syntax).")] = None,
         search_in_scene: Annotated[Optional[StrictStr], Field(description="Conduct the search within a specific scene. Provide the full URL for the asset including the storage backend URL prefix.")] = None,
-        filter_by_properties: Annotated[Optional[StrictStr], Field(description="Filter assets by USD attributes where at least one root prim matches (note: only supported for a subset of attributes indexed). Format: `attribute1=abc,attribute2=456`")] = None,
+        filter_by_properties: Annotated[Optional[StrictStr], Field(description="Filter assets by USD attributes where at least one root prim matches (note: only supported for a subset of attributes indexed). Format: `attribute1=abc,attribute2=456`, to search for key only use `key=`, and to search for value only `=value`")] = None,
+        exclude_filter_by_properties: Annotated[Optional[StrictStr], Field(description="Exclude assets by USD attributes (note: only supported for a subset of attributes indexed). Format: `attribute1=abc,attribute2=456`")] = None,
         min_bbox_x: Annotated[Optional[Union[Annotated[float, Field(strict=True, ge=0)], Annotated[int, Field(strict=True, ge=0)]]], Field(description="Filter by minimum X axis dimension of the asset's bounding box")] = None,
         min_bbox_y: Annotated[Optional[Union[Annotated[float, Field(strict=True, ge=0)], Annotated[int, Field(strict=True, ge=0)]]], Field(description="Filter by minimum Y axis dimension of the asset's bounding box")] = None,
         min_bbox_z: Annotated[Optional[Union[Annotated[float, Field(strict=True, ge=0)], Annotated[int, Field(strict=True, ge=0)]]], Field(description="Filter by minimum Z axis dimension of the asset's bounding box")] = None,
@@ -807,10 +1109,11 @@ class AISearchApi:
         return_default_prims: Annotated[Optional[StrictBool], Field(description="Return default prims if set to True")] = None,
         return_predictions: Annotated[Optional[StrictBool], Field(description="Return predictions if set to True")] = None,
         return_in_scene_instances_prims: Annotated[Optional[StrictBool], Field(description="[in-scene search only] Return prims of instances of objects found in the scene")] = None,
-        embedding_knn_search_method: Annotated[Optional[Any], Field(description="Search method, approximate should be faster but is less accurate. Default is exact")] = None,
+        embedding_knn_search_method: Annotated[Optional[SearchMethod], Field(description="Search method, approximate should be faster but is less accurate. Default is exact")] = None,
         limit: Annotated[Optional[Annotated[int, Field(le=10000, strict=True)]], Field(description="Set the maximum number of results to return from the search, default is 32")] = None,
         vision_metadata: Annotated[Optional[StrictStr], Field(description="Uses a keyword match query on metadata fields that were generated using Vision Language Models")] = None,
         return_vision_generated_metadata: Annotated[Optional[StrictBool], Field(description="Returns the metadata fields that were generated using Vision Language Models")] = None,
+        return_inner_hits: Annotated[Optional[StrictBool], Field(description="Return inner hits from nested queries for debugging and detailed scoring")] = None,
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -826,7 +1129,7 @@ class AISearchApi:
     ) -> RESTResponseType:
         """Search
 
-        Version 2 of the DeepSearch API search endpoint. All supported search parameters are available as query parameters. It *does not* support DeepSearch query language.  Search endpoint enables comprehensive searches across images (e.g., .jpg, .png) and USD-based 3D models within various storage backends (Nucleus, S3, etc.). It enables users to use natural language, image similarity, and precise metadata criteria (file name, type, date, size, creator, etc.) to locate relevant content efficiently. Furthermore, when integrated with the Asset Graph Service, DeepSearch extends its capabilities to include searches based on USD properties and spatial dimensions of 3D model bounding boxes, enhancing the ability to find assets that meet specific requirements.
+        All supported search parameters are available as query parameters.  Search endpoint enables comprehensive searches across images (e.g., .jpg, .png) and USD-based 3D models within various storage backends (Nucleus, S3, etc.). It enables users to use natural language, image similarity, and precise metadata criteria (file name, type, date, size, creator, etc.) to locate relevant content efficiently. Furthermore, when integrated with the Asset Graph Service, USD Search API extends its capabilities to include searches based on USD properties and spatial dimensions of 3D model bounding boxes, enhancing the ability to find assets that meet specific requirements.
 
         :param description: Conduct text-based searches powered by AI
         :type description: str
@@ -860,7 +1163,7 @@ class AISearchApi:
         :type modified_by: str
         :param exclude_modified_by: Exclude assets modified by a specific user from the results
         :type exclude_modified_by: str
-        :param similarity_threshold: Set the similarity threshold for embedding-based searches. This functionality allows filterring duplicates and returning only those results that are different from each other. Assets are considered to be duplicates if the cosine distance betwen the embeddings a smaller than the similarity_threshold value, which could be in the [0, 2] range.
+        :param similarity_threshold: Set the similarity threshold for embedding-based searches. This functionality allows filtering duplicates and returning only those results that are different from each other. Assets are considered to be duplicates if the cosine distance betwen the embeddings a smaller than the similarity_threshold value, which could be in the [0, 2] range.
         :type similarity_threshold: float
         :param cutoff_threshold: Set the cutoff threshold for embedding-based searches
         :type cutoff_threshold: float
@@ -868,10 +1171,14 @@ class AISearchApi:
         :type search_path: str
         :param exclude_search_path: Specify the search path within the storage backend. This path should not contain the storage backend URL, just the asset path on the storage backend. Use wildcards: `*` for any number of characters, `?` for a single character. Separate terms with `,` for OR and `;` for AND.
         :type exclude_search_path: str
+        :param filter_url_regexp: Specify an asset URL filter in the [Lucene Regexp format](https://www.elastic.co/guide/en/elasticsearch/reference/5.6/query-dsl-regexp-query.html#regexp-syntax).
+        :type filter_url_regexp: str
         :param search_in_scene: Conduct the search within a specific scene. Provide the full URL for the asset including the storage backend URL prefix.
         :type search_in_scene: str
-        :param filter_by_properties: Filter assets by USD attributes where at least one root prim matches (note: only supported for a subset of attributes indexed). Format: `attribute1=abc,attribute2=456`
+        :param filter_by_properties: Filter assets by USD attributes where at least one root prim matches (note: only supported for a subset of attributes indexed). Format: `attribute1=abc,attribute2=456`, to search for key only use `key=`, and to search for value only `=value`
         :type filter_by_properties: str
+        :param exclude_filter_by_properties: Exclude assets by USD attributes (note: only supported for a subset of attributes indexed). Format: `attribute1=abc,attribute2=456`
+        :type exclude_filter_by_properties: str
         :param min_bbox_x: Filter by minimum X axis dimension of the asset's bounding box
         :type min_bbox_x: float
         :param min_bbox_y: Filter by minimum Y axis dimension of the asset's bounding box
@@ -904,6 +1211,8 @@ class AISearchApi:
         :type vision_metadata: str
         :param return_vision_generated_metadata: Returns the metadata fields that were generated using Vision Language Models
         :type return_vision_generated_metadata: bool
+        :param return_inner_hits: Return inner hits from nested queries for debugging and detailed scoring
+        :type return_inner_hits: bool
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
                                  timeout. It can also be a pair (tuple) of
@@ -947,8 +1256,10 @@ class AISearchApi:
             cutoff_threshold=cutoff_threshold,
             search_path=search_path,
             exclude_search_path=exclude_search_path,
+            filter_url_regexp=filter_url_regexp,
             search_in_scene=search_in_scene,
             filter_by_properties=filter_by_properties,
+            exclude_filter_by_properties=exclude_filter_by_properties,
             min_bbox_x=min_bbox_x,
             min_bbox_y=min_bbox_y,
             min_bbox_z=min_bbox_z,
@@ -965,6 +1276,7 @@ class AISearchApi:
             limit=limit,
             vision_metadata=vision_metadata,
             return_vision_generated_metadata=return_vision_generated_metadata,
+            return_inner_hits=return_inner_hits,
             _request_auth=_request_auth,
             _content_type=_content_type,
             _headers=_headers,
@@ -972,7 +1284,7 @@ class AISearchApi:
         )
 
         _response_types_map: Dict[str, Optional[str]] = {
-            '200': "List[SearchResult]",
+            '200': "List[DeepsearchApiRoutersV2ModelsSearchResult]",
             '422': "HTTPValidationError",
         }
         response_data = await self.api_client.call_api(
@@ -1004,8 +1316,10 @@ class AISearchApi:
         cutoff_threshold,
         search_path,
         exclude_search_path,
+        filter_url_regexp,
         search_in_scene,
         filter_by_properties,
+        exclude_filter_by_properties,
         min_bbox_x,
         min_bbox_y,
         min_bbox_z,
@@ -1022,6 +1336,7 @@ class AISearchApi:
         limit,
         vision_metadata,
         return_vision_generated_metadata,
+        return_inner_hits,
         _request_auth,
         _content_type,
         _headers,
@@ -1123,6 +1438,10 @@ class AISearchApi:
             
             _query_params.append(('exclude_search_path', exclude_search_path))
             
+        if filter_url_regexp is not None:
+            
+            _query_params.append(('filter_url_regexp', filter_url_regexp))
+            
         if search_in_scene is not None:
             
             _query_params.append(('search_in_scene', search_in_scene))
@@ -1130,6 +1449,10 @@ class AISearchApi:
         if filter_by_properties is not None:
             
             _query_params.append(('filter_by_properties', filter_by_properties))
+            
+        if exclude_filter_by_properties is not None:
+            
+            _query_params.append(('exclude_filter_by_properties', exclude_filter_by_properties))
             
         if min_bbox_x is not None:
             
@@ -1195,6 +1518,10 @@ class AISearchApi:
             
             _query_params.append(('return_vision_generated_metadata', return_vision_generated_metadata))
             
+        if return_inner_hits is not None:
+            
+            _query_params.append(('return_inner_hits', return_inner_hits))
+            
         # process the header parameters
         # process the form parameters
         # process the body parameter
@@ -1219,6 +1546,252 @@ class AISearchApi:
         return self.api_client.param_serialize(
             method='GET',
             resource_path='/search',
+            path_params=_path_params,
+            query_params=_query_params,
+            header_params=_header_params,
+            body=_body_params,
+            post_params=_form_params,
+            files=_files,
+            auth_settings=_auth_settings,
+            collection_formats=_collection_formats,
+            _host=_host,
+            _request_auth=_request_auth
+        )
+
+
+
+
+    @validate_call
+    async def stats_usd_properties_v2_deepsearch_search_stats_usd_properties_get(
+        self,
+        _request_timeout: Union[
+            None,
+            Annotated[StrictFloat, Field(gt=0)],
+            Tuple[
+                Annotated[StrictFloat, Field(gt=0)],
+                Annotated[StrictFloat, Field(gt=0)]
+            ]
+        ] = None,
+        _request_auth: Optional[Dict[StrictStr, Any]] = None,
+        _content_type: Optional[StrictStr] = None,
+        _headers: Optional[Dict[StrictStr, Any]] = None,
+        _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
+    ) -> StatsResponse:
+        """Stats Usd Properties
+
+        Get statistics for USD properties: count of unique properties, count of unique values, and count of unique kv pairs.
+
+        :param _request_timeout: timeout setting for this request. If one
+                                 number provided, it will be total request
+                                 timeout. It can also be a pair (tuple) of
+                                 (connection, read) timeouts.
+        :type _request_timeout: int, tuple(int, int), optional
+        :param _request_auth: set to override the auth_settings for an a single
+                              request; this effectively ignores the
+                              authentication in the spec for a single request.
+        :type _request_auth: dict, optional
+        :param _content_type: force content-type for the request.
+        :type _content_type: str, Optional
+        :param _headers: set to override the headers for a single
+                         request; this effectively ignores the headers
+                         in the spec for a single request.
+        :type _headers: dict, optional
+        :param _host_index: set to override the host_index for a single
+                            request; this effectively ignores the host_index
+                            in the spec for a single request.
+        :type _host_index: int, optional
+        :return: Returns the result object.
+        """ # noqa: E501
+
+        _param = self._stats_usd_properties_v2_deepsearch_search_stats_usd_properties_get_serialize(
+            _request_auth=_request_auth,
+            _content_type=_content_type,
+            _headers=_headers,
+            _host_index=_host_index
+        )
+
+        _response_types_map: Dict[str, Optional[str]] = {
+            '200': "StatsResponse",
+        }
+        response_data = await self.api_client.call_api(
+            *_param,
+            _request_timeout=_request_timeout
+        )
+        await response_data.read()
+        return self.api_client.response_deserialize(
+            response_data=response_data,
+            response_types_map=_response_types_map,
+        ).data
+
+
+    @validate_call
+    async def stats_usd_properties_v2_deepsearch_search_stats_usd_properties_get_with_http_info(
+        self,
+        _request_timeout: Union[
+            None,
+            Annotated[StrictFloat, Field(gt=0)],
+            Tuple[
+                Annotated[StrictFloat, Field(gt=0)],
+                Annotated[StrictFloat, Field(gt=0)]
+            ]
+        ] = None,
+        _request_auth: Optional[Dict[StrictStr, Any]] = None,
+        _content_type: Optional[StrictStr] = None,
+        _headers: Optional[Dict[StrictStr, Any]] = None,
+        _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
+    ) -> ApiResponse[StatsResponse]:
+        """Stats Usd Properties
+
+        Get statistics for USD properties: count of unique properties, count of unique values, and count of unique kv pairs.
+
+        :param _request_timeout: timeout setting for this request. If one
+                                 number provided, it will be total request
+                                 timeout. It can also be a pair (tuple) of
+                                 (connection, read) timeouts.
+        :type _request_timeout: int, tuple(int, int), optional
+        :param _request_auth: set to override the auth_settings for an a single
+                              request; this effectively ignores the
+                              authentication in the spec for a single request.
+        :type _request_auth: dict, optional
+        :param _content_type: force content-type for the request.
+        :type _content_type: str, Optional
+        :param _headers: set to override the headers for a single
+                         request; this effectively ignores the headers
+                         in the spec for a single request.
+        :type _headers: dict, optional
+        :param _host_index: set to override the host_index for a single
+                            request; this effectively ignores the host_index
+                            in the spec for a single request.
+        :type _host_index: int, optional
+        :return: Returns the result object.
+        """ # noqa: E501
+
+        _param = self._stats_usd_properties_v2_deepsearch_search_stats_usd_properties_get_serialize(
+            _request_auth=_request_auth,
+            _content_type=_content_type,
+            _headers=_headers,
+            _host_index=_host_index
+        )
+
+        _response_types_map: Dict[str, Optional[str]] = {
+            '200': "StatsResponse",
+        }
+        response_data = await self.api_client.call_api(
+            *_param,
+            _request_timeout=_request_timeout
+        )
+        await response_data.read()
+        return self.api_client.response_deserialize(
+            response_data=response_data,
+            response_types_map=_response_types_map,
+        )
+
+
+    @validate_call
+    async def stats_usd_properties_v2_deepsearch_search_stats_usd_properties_get_without_preload_content(
+        self,
+        _request_timeout: Union[
+            None,
+            Annotated[StrictFloat, Field(gt=0)],
+            Tuple[
+                Annotated[StrictFloat, Field(gt=0)],
+                Annotated[StrictFloat, Field(gt=0)]
+            ]
+        ] = None,
+        _request_auth: Optional[Dict[StrictStr, Any]] = None,
+        _content_type: Optional[StrictStr] = None,
+        _headers: Optional[Dict[StrictStr, Any]] = None,
+        _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
+    ) -> RESTResponseType:
+        """Stats Usd Properties
+
+        Get statistics for USD properties: count of unique properties, count of unique values, and count of unique kv pairs.
+
+        :param _request_timeout: timeout setting for this request. If one
+                                 number provided, it will be total request
+                                 timeout. It can also be a pair (tuple) of
+                                 (connection, read) timeouts.
+        :type _request_timeout: int, tuple(int, int), optional
+        :param _request_auth: set to override the auth_settings for an a single
+                              request; this effectively ignores the
+                              authentication in the spec for a single request.
+        :type _request_auth: dict, optional
+        :param _content_type: force content-type for the request.
+        :type _content_type: str, Optional
+        :param _headers: set to override the headers for a single
+                         request; this effectively ignores the headers
+                         in the spec for a single request.
+        :type _headers: dict, optional
+        :param _host_index: set to override the host_index for a single
+                            request; this effectively ignores the host_index
+                            in the spec for a single request.
+        :type _host_index: int, optional
+        :return: Returns the result object.
+        """ # noqa: E501
+
+        _param = self._stats_usd_properties_v2_deepsearch_search_stats_usd_properties_get_serialize(
+            _request_auth=_request_auth,
+            _content_type=_content_type,
+            _headers=_headers,
+            _host_index=_host_index
+        )
+
+        _response_types_map: Dict[str, Optional[str]] = {
+            '200': "StatsResponse",
+        }
+        response_data = await self.api_client.call_api(
+            *_param,
+            _request_timeout=_request_timeout
+        )
+        return response_data.response
+
+
+    def _stats_usd_properties_v2_deepsearch_search_stats_usd_properties_get_serialize(
+        self,
+        _request_auth,
+        _content_type,
+        _headers,
+        _host_index,
+    ) -> RequestSerialized:
+
+        _host = None
+
+        _collection_formats: Dict[str, str] = {
+        }
+
+        _path_params: Dict[str, str] = {}
+        _query_params: List[Tuple[str, str]] = []
+        _header_params: Dict[str, Optional[str]] = _headers or {}
+        _form_params: List[Tuple[str, str]] = []
+        _files: Dict[str, Union[str, bytes]] = {}
+        _body_params: Optional[bytes] = None
+
+        # process the path parameters
+        # process the query parameters
+        # process the header parameters
+        # process the form parameters
+        # process the body parameter
+
+
+        # set the HTTP header `Accept`
+        if 'Accept' not in _header_params:
+            _header_params['Accept'] = self.api_client.select_header_accept(
+                [
+                    'application/json'
+                ]
+            )
+
+
+        # authentication setting
+        _auth_settings: List[str] = [
+            'APIKeyHeader', 
+            'HTTPBasic', 
+            'HTTPBearer'
+        ]
+
+        return self.api_client.param_serialize(
+            method='GET',
+            resource_path='/search/stats/usd_properties',
             path_params=_path_params,
             query_params=_query_params,
             header_params=_header_params,

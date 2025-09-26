@@ -13,7 +13,7 @@ Name | Type | Description | Notes
 ```python
 from usd_search_client.models.asset import Asset
 
-# update the JSON string below
+# TODO update the JSON string below
 json = "{}"
 # create an instance of Asset from a JSON string
 asset_instance = Asset.from_json(json)

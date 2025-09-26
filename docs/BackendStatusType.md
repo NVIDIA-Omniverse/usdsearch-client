@@ -1,6 +1,5 @@
 # BackendStatusType
 
-An enumeration.
 
 ## Enum
 

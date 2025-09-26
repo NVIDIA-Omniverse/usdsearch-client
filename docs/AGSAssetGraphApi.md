@@ -29,7 +29,7 @@ from usd_search_client.models.asset import Asset
 from usd_search_client.rest import ApiException
 from pprint import pprint
 
-
+# Defining the host is optional and defaults to http://api.my-usd-search-instance.example.com
 # See configuration.py for a list of all supported configuration parameters.
 configuration = usd_search_client.Configuration(
     host = "http://api.my-usd-search-instance.example.com"
@@ -126,7 +126,7 @@ from usd_search_client.models.asset_graph import AssetGraph
 from usd_search_client.rest import ApiException
 from pprint import pprint
 
-
+# Defining the host is optional and defaults to http://api.my-usd-search-instance.example.com
 # See configuration.py for a list of all supported configuration parameters.
 configuration = usd_search_client.Configuration(
     host = "http://api.my-usd-search-instance.example.com"
@@ -223,7 +223,7 @@ from usd_search_client.models.asset import Asset
 from usd_search_client.rest import ApiException
 from pprint import pprint
 
-
+# Defining the host is optional and defaults to http://api.my-usd-search-instance.example.com
 # See configuration.py for a list of all supported configuration parameters.
 configuration = usd_search_client.Configuration(
     host = "http://api.my-usd-search-instance.example.com"
@@ -320,7 +320,7 @@ from usd_search_client.models.asset_graph import AssetGraph
 from usd_search_client.rest import ApiException
 from pprint import pprint
 
-
+# Defining the host is optional and defaults to http://api.my-usd-search-instance.example.com
 # See configuration.py for a list of all supported configuration parameters.
 configuration = usd_search_client.Configuration(
     host = "http://api.my-usd-search-instance.example.com"

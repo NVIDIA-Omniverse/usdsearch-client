@@ -6,6 +6,7 @@
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **scene_url** | **str** |  | 
+**scene_mpu** | **float** |  | 
 **usd_path** | **str** |  | 
 **prim_type** | **str** |  | 
 **bbox_max** | **List[float]** |  | 
@@ -14,6 +15,9 @@ Name | Type | Description | Notes
 **bbox_dimension_x** | **float** |  | 
 **bbox_dimension_y** | **float** |  | 
 **bbox_dimension_z** | **float** |  | 
+**scaled_bbox_dimension_x** | **float** |  | 
+**scaled_bbox_dimension_y** | **float** |  | 
+**scaled_bbox_dimension_z** | **float** |  | 
 **source_asset_url** | **str** |  | [optional] 
 **properties** | **Dict[str, str]** |  | [optional] 
 **root_prim** | **bool** |  | [optional] 
@@ -24,7 +28,7 @@ Name | Type | Description | Notes
 ```python
 from usd_search_client.models.prim1 import Prim1
 
-# update the JSON string below
+# TODO update the JSON string below
 json = "{}"
 # create an instance of Prim1 from a JSON string
 prim1_instance = Prim1.from_json(json)

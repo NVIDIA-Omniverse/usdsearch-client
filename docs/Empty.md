@@ -12,7 +12,7 @@ Name | Type | Description | Notes
 ```python
 from usd_search_client.models.empty import Empty
 
-# update the JSON string below
+# TODO update the JSON string below
 json = "{}"
 # create an instance of Empty from a JSON string
 empty_instance = Empty.from_json(json)

@@ -1,6 +1,5 @@
 # EventMapping
 
-An enumeration.
 
 ## Enum
 

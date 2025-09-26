@@ -7,14 +7,14 @@ Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **node_1_url** | **str** |  | 
 **node_2_url** | **str** |  | 
-**type** | [**EdgeType1**](EdgeType1.md) |  | 
+**type** | [**EdgeType**](EdgeType.md) |  | 
 
 ## Example
 
 ```python
 from usd_search_client.models.asset_relationship import AssetRelationship
 
-# update the JSON string below
+# TODO update the JSON string below
 json = "{}"
 # create an instance of AssetRelationship from a JSON string
 asset_relationship_instance = AssetRelationship.from_json(json)

@@ -12,7 +12,7 @@ Name | Type | Description | Notes
 ```python
 from usd_search_client.models.hash_value import HashValue
 
-# update the JSON string below
+# TODO update the JSON string below
 json = "{}"
 # create an instance of HashValue from a JSON string
 hash_value_instance = HashValue.from_json(json)

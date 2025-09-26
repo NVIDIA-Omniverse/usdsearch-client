@@ -12,7 +12,7 @@ Name | Type | Description | Notes
 ```python
 from usd_search_client.models.prim_type import PrimType
 
-# update the JSON string below
+# TODO update the JSON string below
 json = "{}"
 # create an instance of PrimType from a JSON string
 prim_type_instance = PrimType.from_json(json)

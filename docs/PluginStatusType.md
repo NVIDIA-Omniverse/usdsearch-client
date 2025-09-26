@@ -1,6 +1,5 @@
 # PluginStatusType
 
-An enumeration.
 
 ## Enum
 
