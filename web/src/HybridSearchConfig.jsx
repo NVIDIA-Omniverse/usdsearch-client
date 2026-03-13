@@ -1,5 +1,5 @@
 /**
- * SPDX-FileCopyrightText: Copyright (c) 2024-2025 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+ * SPDX-FileCopyrightText: Copyright (c) 2024-2026 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
  * SPDX-License-Identifier: MIT
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -22,6 +22,7 @@
  */
 
 import React, { useState, useEffect } from "react";
+import { defaultEmbeddingConfig } from "./config";
 import {
   Box,
   VStack,
@@ -86,6 +87,8 @@ const DEFAULT_HYBRID_CONFIG = {
       { field: "name.standard", nested: false, enabled: true, weight: 2.0, match_type: "fuzzy", fuzzy_max_expansions: 1, wildcard: true },
       { field: "usd_properties.value", nested: true, enabled: true, weight: 1.0, match_type: "fuzzy", fuzzy_max_expansions: 1, wildcard: true },
       { field: "usd_properties.key", nested: true, enabled: true, weight: 1.0, match_type: "fuzzy", fuzzy_max_expansions: 1, wildcard: true },
+      { field: "tags.tag", nested: true, enabled: true, weight: 1.0, match_type: "fuzzy", fuzzy_max_expansions: 1, wildcard: true },
+      { field: "tags.value", nested: true, enabled: true, weight: 1.0, match_type: "fuzzy", fuzzy_max_expansions: 1, wildcard: true },
       { field: "path", nested: false, enabled: true, weight: 1.0, match_type: "fuzzy", fuzzy_max_expansions: 1, wildcard: true },
       { field: "path.tree", nested: false, enabled: true, weight: 1.0, match_type: "fuzzy", fuzzy_max_expansions: 1, wildcard: true },
       { field: "path.tree_reverse", nested: false, enabled: true, weight: 1.0, match_type: "fuzzy", fuzzy_max_expansions: 1, wildcard: true },
@@ -94,17 +97,17 @@ const DEFAULT_HYBRID_CONFIG = {
     cross_field_operator: "or"
   },
   vector_fields: {
-    "clip-embedding.embedding": {
+    [defaultEmbeddingConfig.field_name]: {
       enabled: true,
       weight: 1.0,
-      field_name: "clip-embedding.embedding",
-      dimension: 1024,
+      field_name: defaultEmbeddingConfig.field_name,
+      dimension: defaultEmbeddingConfig.dimension || 1024,
       // model_name: null
     }
   }
 };
 
-const HybridSearchConfig = ({ value = DEFAULT_HYBRID_CONFIG, onChange, isCollapsed = true }) => {
+const HybridSearchConfig = ({ value = DEFAULT_HYBRID_CONFIG, onChange, isCollapsed = true, embeddingConfig = defaultEmbeddingConfig }) => {
   const [config, setConfig] = useState(value);
   const { isOpen, onToggle } = useDisclosure({ defaultIsOpen: !isCollapsed });
 
@@ -112,6 +115,32 @@ const HybridSearchConfig = ({ value = DEFAULT_HYBRID_CONFIG, onChange, isCollaps
   useEffect(() => {
     setConfig(value);
   }, [value]);
+
+  // Update vector_fields when embeddingConfig changes
+  useEffect(() => {
+    if (embeddingConfig?.field_name) {
+      const currentFieldNames = Object.keys(config.vector_fields);
+      const currentDimensions = Object.values(config.vector_fields).map(v => v.dimension);
+      // Update if the embedding field name is different or dimension changed
+      if (!currentFieldNames.includes(embeddingConfig.field_name) || 
+          !currentDimensions.includes(embeddingConfig.dimension)) {
+        const newVectorFields = {
+          [embeddingConfig.field_name]: {
+            enabled: true,
+            weight: 1.0,
+            field_name: embeddingConfig.field_name,
+            dimension: embeddingConfig.dimension || 1024,
+          }
+        };
+        const newConfig = {
+          ...config,
+          vector_fields: newVectorFields
+        };
+        setConfig(newConfig);
+        onChange?.(newConfig);
+      }
+    }
+  }, [embeddingConfig]);
 
   const updateConfig = (newConfig) => {
     setConfig(newConfig);

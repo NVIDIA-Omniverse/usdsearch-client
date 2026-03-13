@@ -1,5 +1,5 @@
 /**
- * SPDX-FileCopyrightText: Copyright (c) 2024-2025 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+ * SPDX-FileCopyrightText: Copyright (c) 2024-2026 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
  * SPDX-License-Identifier: MIT
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -30,20 +30,11 @@ import {
   InputGroup,
   InputRightElement,
   Button,
-  Heading,
   Text,
-  Flex,
   IconButton,
   Image,
   useToast,
   useDisclosure,
-  Popover,
-  PopoverTrigger,
-  PopoverContent,
-  PopoverHeader,
-  PopoverBody,
-  PopoverArrow,
-  PopoverCloseButton,
   Modal,
   ModalOverlay,
   ModalContent,
@@ -51,24 +42,18 @@ import {
   ModalBody,
   ModalFooter,
   ModalCloseButton,
-  Divider,
   Switch,
   FormControl,
   FormLabel,
   Badge,
   Tooltip,
-  Spacer,
   Grid,
   GridItem,
-  Select,
 } from "@chakra-ui/react";
 import {
   SearchIcon,
   CloseIcon,
-  LockIcon,
-  UnlockIcon,
   InfoIcon,
-  SettingsIcon,
   ViewIcon,
   HamburgerIcon,
   LinkIcon,
@@ -78,13 +63,12 @@ import {
   MinusIcon,
 } from "@chakra-ui/icons";
 
-import { apiUrl as defaultApiUrl, IMAGE_SIZE, AUTH_CONFIG, IS_HTTPS, FEATURE_FLAGS, SERVER_MAPPING } from "./config";
+import { apiUrl as defaultApiUrl, defaultEmbeddingConfig, AUTH_CONFIG, IS_HTTPS, FEATURE_FLAGS, SERVER_MAPPING } from "./config";
 import HybridSearchConfig, { DEFAULT_HYBRID_CONFIG } from "./HybridSearchConfig";
 import SearchFilters from "./SearchFilters";
 import HybridSearchResults from "./HybridSearchResults";
 import VirtualizedHybridSearchResults from "./components/VirtualizedHybridSearchResults";
 import AssetDetailsModal from "./AssetDetailsModal";
-import SmartAssetImage from "./components/SmartAssetImage";
 
 // Memoized results component to prevent re-renders when modal opens/closes
 const MemoizedResults = React.memo(({ 
@@ -134,6 +118,23 @@ const HybridDeepSearchUI = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [lastSearchQuery, setLastSearchQuery] = useState(""); // Store the query used for the current results
   const [apiUrl, setApiUrl] = useState(defaultApiUrl);
+  const [embeddingConfig, setEmbeddingConfig] = useState(() => {
+    // Get initial embedding config from server mapping based on URL param or first server
+    const urlParams = new URLSearchParams(window.location.search);
+    const serverParam = urlParams.get('server');
+    
+    if (serverParam && SERVER_MAPPING[serverParam]?.embedding_config) {
+      return SERVER_MAPPING[serverParam].embedding_config;
+    }
+    
+    // Fall back to first server in mapping if available
+    const servers = Object.keys(SERVER_MAPPING);
+    if (servers.length > 0 && SERVER_MAPPING[servers[0]]?.embedding_config) {
+      return SERVER_MAPPING[servers[0]].embedding_config;
+    }
+    
+    return defaultEmbeddingConfig;
+  });
 
   // Listen for server selection changes from the header
   useEffect(() => {
@@ -142,6 +143,7 @@ const HybridDeepSearchUI = () => {
       if (event.detail.server) {
         // Set the selected backend
         setSelectedBackend(event.detail.server);
+        setEmbeddingConfig(event.detail.embeddingConfig || defaultEmbeddingConfig);
         setResults([]);
         
         // Update auth state with server-specific credentials
@@ -193,6 +195,27 @@ const HybridDeepSearchUI = () => {
   const [imageBase64, setImageBase64] = useState("");
   const [similarSearchAsset, setSimilarSearchAsset] = useState(null);
   const [hybridConfig, setHybridConfig] = useState(DEFAULT_HYBRID_CONFIG);
+
+  // Update hybridConfig when embeddingConfig changes
+  useEffect(() => {
+    if (embeddingConfig?.field_name) {
+      setHybridConfig(prevConfig => {
+        // Remove old vector fields and add the new one with the correct embedding config
+        const newVectorFields = {
+          [embeddingConfig.field_name]: {
+            enabled: true,
+            weight: 1.0,
+            field_name: embeddingConfig.field_name,
+            dimension: embeddingConfig.dimension || 1024,
+          }
+        };
+        return {
+          ...prevConfig,
+          vector_fields: newVectorFields
+        };
+      });
+    }
+  }, [embeddingConfig]);
   const [configCollapsed, setConfigCollapsed] = useState(true);
   const [results, setResults] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -244,6 +267,7 @@ const HybridDeepSearchUI = () => {
     
     // Content & Properties Filters  
     filter_by_properties: "",
+    filter_by_tags: "",
     vision_metadata: "",
     
     // Size & Dimension Filters
@@ -963,13 +987,14 @@ const HybridDeepSearchUI = () => {
       return_metadata: true,
       return_vision_generated_metadata: true,
       return_usd_properties: true,
+      return_tags: true,
       
       // Hybrid search configuration
       scoring_config: hybridConfig,
       
       // Vector queries using asset URL for image similarity
       vector_queries: [{
-        field_name: "clip-embedding.embedding",
+        field_name: embeddingConfig.field_name,
         query_type: "image",
         query: assetUrl
       }],
@@ -1114,6 +1139,7 @@ const HybridDeepSearchUI = () => {
         return_metadata: true,
         return_vision_generated_metadata: true,
         return_usd_properties: true,
+        return_tags: true,
         
         // Hybrid search configuration
         scoring_config: hybridConfig,
@@ -1128,7 +1154,7 @@ const HybridDeepSearchUI = () => {
           // Add image vector query if present
           if (imageBase64) {
             vectorQueries.push({
-              field_name: "clip-embedding.embedding",
+              field_name: embeddingConfig.field_name,
               query_type: "image",
               query: imageBase64.split(",")[1] // Remove data URL prefix
             });
@@ -1142,7 +1168,7 @@ const HybridDeepSearchUI = () => {
               
               // Always add the full query
               vectorQueries.push({
-                field_name: "clip-embedding.embedding",
+                field_name: embeddingConfig.field_name,
                 query_type: "text",
                 query: searchQuery
               });
@@ -1151,7 +1177,7 @@ const HybridDeepSearchUI = () => {
               if (words.length > 1) {
                 words.forEach(word => {
                   vectorQueries.push({
-                    field_name: "clip-embedding.embedding",
+                    field_name: embeddingConfig.field_name,
                     query_type: "text",
                     query: word
                   });
@@ -1160,7 +1186,7 @@ const HybridDeepSearchUI = () => {
             } else {
               // With expansion disabled: send only the full query
               vectorQueries.push({
-                field_name: "clip-embedding.embedding",
+                field_name: embeddingConfig.field_name,
                 query_type: "text",
                 query: searchQuery
               });
@@ -1255,6 +1281,7 @@ const HybridDeepSearchUI = () => {
       search_in_scene: "",
       filter_url_regexp: "",
       filter_by_properties: "",
+      filter_by_tags: "",
       vision_metadata: "",
       deduplicate_by_hash: false,
       limit: 50,
@@ -1663,6 +1690,7 @@ const HybridDeepSearchUI = () => {
             value={hybridConfig}
             onChange={setHybridConfig}
             isCollapsed={configCollapsed}
+            embeddingConfig={embeddingConfig}
           />
         </VStack>
 

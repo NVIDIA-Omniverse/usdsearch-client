@@ -1,5 +1,5 @@
 /**
- * SPDX-FileCopyrightText: Copyright (c) 2024-2025 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+ * SPDX-FileCopyrightText: Copyright (c) 2024-2026 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
  * SPDX-License-Identifier: MIT
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -23,6 +23,15 @@
 
 // If not set it uses the local 'api/' endpoint
 export const apiUrl = process.env.REACT_APP_API_URL || "";
+
+export const defaultEmbeddingFieldName = process.env.REACT_APP_DEFAULT_EMBEDDING_FIELD_NAME || "siglip2-embedding.embedding";
+export const defaultEmbeddingDimension = process.env.REACT_APP_DEFAULT_EMBEDDING_DIMENSION || 1536;
+
+// Default embedding configuration
+export const defaultEmbeddingConfig = {
+  field_name: defaultEmbeddingFieldName,
+  dimension: 1536
+};
 
 // Server name to URL mapping configuration
 // Expects a JSON string in format: {"server1": "http://url1", "server2": "http://url2"}

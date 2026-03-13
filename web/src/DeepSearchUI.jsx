@@ -1,5 +1,5 @@
 /**
- * SPDX-FileCopyrightText: Copyright (c) 2024-2025 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+ * SPDX-FileCopyrightText: Copyright (c) 2024-2026 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
  * SPDX-License-Identifier: MIT
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -830,6 +830,7 @@ function SearchApp() {
     vision_metadata: "",
     filter_url_regexp: null,
     filter_by_properties: "",
+    filter_by_tags: "",
     embedding_knn_search_method: "exact",
   });
 
@@ -2329,6 +2330,15 @@ function SearchApp() {
                   apiData={propertiesData}
                   id="filter_by_properties"
                   name="filter_by_properties"
+                ></FilterByPropertiesInput>
+              </GridItem>
+              <GridItem width="420px" flexGrow={1} colSpan={2}>
+                <FilterByPropertiesInput
+                  value={searchParams.filter_by_tags}
+                  onChange={handleChange}
+                  apiData={propertiesData}
+                  id="filter_by_tags"
+                  name="filter_by_tags"
                 ></FilterByPropertiesInput>
               </GridItem>
             </SimpleGrid>

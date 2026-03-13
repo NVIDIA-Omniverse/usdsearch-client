@@ -1,5 +1,5 @@
 /**
- * SPDX-FileCopyrightText: Copyright (c) 2024-2025 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+ * SPDX-FileCopyrightText: Copyright (c) 2024-2026 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
  * SPDX-License-Identifier: MIT
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -31,11 +31,8 @@ import {
     Input,
     VStack,
     Image,
-    SimpleGrid,
-    FormControl,
     FormLabel,
     useToast,
-    Collapse,
     Modal,
     ModalOverlay,
     ModalContent,
@@ -45,7 +42,7 @@ import {
     ModalCloseButton,
     useDisclosure, Heading, Flex, HStack, IconButton, Popover,
     PopoverTrigger, PopoverContent, PopoverArrow, PopoverCloseButton,
-    PopoverHeader, PopoverBody, Divider, Select, Tooltip
+    PopoverHeader, PopoverBody, Divider, Select, Link
 } from '@chakra-ui/react';
 import { LockIcon, UnlockIcon, InfoIcon, ExternalLinkIcon, ChevronDownIcon } from '@chakra-ui/icons';
 
@@ -54,9 +51,10 @@ import {mode} from '@chakra-ui/theme-tools';
 import SearchApp from "./HybridDeepSearchUI";
 import {StyleFunctionProps} from "@chakra-ui/react";
 import logo from "./img/nvidia_logo.png";
-import { apiUrl as defaultApiUrl, SERVER_MAPPING } from "./config";
+import { apiUrl as defaultApiUrl, SERVER_MAPPING, defaultEmbeddingConfig } from "./config";
 import GraphVisualization from "./Graph";
 import persistentCache from "./utils/persistentImageCache";
+import { useDeviceFlowAuth, getServerHttpsUrl, AuthStatus, createApiToken } from "./nucleus";
 
 const theme = extendTheme({
     colors: {
@@ -120,6 +118,11 @@ const AuthForm = ({ auth, setAuth, getServerStorageKey }) => {
         if (auth.api_key) return 'api_key';
         return 'basic';
     });
+    
+    // Device flow modal state
+    const { isOpen: isDeviceFlowOpen, onOpen: onDeviceFlowOpen, onClose: onDeviceFlowClose } = useDisclosure();
+    const deviceFlowAuth = useDeviceFlowAuth();
+    const toast = useToast();
 
     // Helper function to check if backend is S3
     const isS3Backend = (backendString) => {
@@ -262,6 +265,115 @@ const AuthForm = ({ auth, setAuth, getServerStorageKey }) => {
         window.dispatchEvent(new Event('storage'));
     };
 
+    // Start Nucleus device flow authentication
+    const handleStartDeviceFlow = async () => {
+        if (!backend) {
+            toast({
+                title: "No server detected",
+                description: "Please wait for backend information to load",
+                status: "warning",
+                duration: 3000,
+            });
+            return;
+        }
+        
+        onDeviceFlowOpen();
+        
+        try {
+            const result = await deviceFlowAuth.startAuth(backend);
+            // Start polling for token
+            deviceFlowAuth.startPolling(backend, result.device_code, result.interval);
+        } catch (error) {
+            toast({
+                title: "Failed to start authentication",
+                description: error.message,
+                status: "error",
+                duration: 5000,
+            });
+        }
+    };
+
+    // Handle successful device flow authentication - create API token
+    useEffect(() => {
+        const createAndSaveApiToken = async () => {
+            if (deviceFlowAuth.authResult && deviceFlowAuth.authResult.status === AuthStatus.OK) {
+                try {
+                    // Create a long-lived API token using the access token
+                    const now = new Date();
+                    const timestamp = `${now.toISOString().split('T')[0]}_${now.getHours().toString().padStart(2, '0')}-${now.getMinutes().toString().padStart(2, '0')}-${now.getSeconds().toString().padStart(2, '0')}`;
+                    const tokenName = `USD-Search-${timestamp}`;
+                    
+                    console.log("Creating API token with name:", tokenName);
+                    
+                    toast({
+                        title: "Creating API token...",
+                        description: "Please wait while we create a permanent API token",
+                        status: "info",
+                        duration: 3000,
+                    });
+                    
+                    // Pass null for expireAt to create a permanent token (no expiration)
+                    const apiTokenResult = await createApiToken(
+                        backend, 
+                        deviceFlowAuth.authResult.access_token, 
+                        tokenName, 
+                        null
+                    );
+                    
+                    // Set the API token as the password with $omni-api-token username
+                    const newAuth = { 
+                        ...auth, 
+                        username: '$omni-api-token',
+                        password: apiTokenResult.api_token 
+                    };
+                    setAuth(newAuth);
+                    
+                    // Save to localStorage
+                    localStorage.setItem(getServerStorageKey("username"), '$omni-api-token');
+                    localStorage.setItem(getServerStorageKey("password"), apiTokenResult.api_token);
+                    window.dispatchEvent(new Event('storage'));
+                    window.dispatchEvent(new Event('auth-updated'));
+                    
+                    toast({
+                        title: "Authentication successful!",
+                        description: `Created permanent API token for ${deviceFlowAuth.authResult.username || 'user'}.`,
+                        status: "success",
+                        duration: 5000,
+                    });
+                    
+                    onDeviceFlowClose();
+                    deviceFlowAuth.reset();
+                } catch (error) {
+                    console.error("Failed to create API token:", error);
+                    
+                    toast({
+                        title: "Failed to create API token",
+                        description: error.message || "Unknown error occurred while creating API token",
+                        status: "error",
+                        duration: 8000,
+                    });
+                    
+                    // Reset the device flow but keep the modal open so user can retry
+                    deviceFlowAuth.reset();
+                }
+            }
+        };
+        
+        createAndSaveApiToken();
+    }, [deviceFlowAuth.authResult]);
+
+    // Handle device flow errors
+    useEffect(() => {
+        if (deviceFlowAuth.error) {
+            toast({
+                title: "Authentication failed",
+                description: deviceFlowAuth.error,
+                status: "error",
+                duration: 5000,
+            });
+        }
+    }, [deviceFlowAuth.error]);
+
     return (
         <VStack spacing={4} align="stretch">
             <Box>
@@ -298,56 +410,90 @@ const AuthForm = ({ auth, setAuth, getServerStorageKey }) => {
 
             {authMethod === 'basic' && (
                 <>
-                    <Box>
-                        <FormLabel fontSize="sm">Username</FormLabel>
-                        <Input
-                            size="sm"
-                            value={auth.username}
-                            onChange={(e) => {
-                                const newAuth = { ...auth, username: e.target.value };
-                                setAuth(newAuth);
-                                // Save immediately
-                                localStorage.setItem(getServerStorageKey("username"), newAuth.username || "");
-                                window.dispatchEvent(new Event('storage'));
-                                window.dispatchEvent(new Event('auth-updated'));
-                            }}
-                            placeholder="Enter username"
-                            borderColor={!auth.isAuthenticated && (!auth.username || auth.username === "") ? "red.300" : "inherit"}
-                            _hover={{ borderColor: !auth.isAuthenticated && (!auth.username || auth.username === "") ? "red.400" : "inherit" }}
-                            _focus={{ borderColor: !auth.isAuthenticated && (!auth.username || auth.username === "") ? "red.500" : "green.500" }}
-                        />
-                        {isS3Backend(backend) && (
-                            <Text fontSize="xs" color="gray.400" mt={1}>
-                                Please set your username - it helps us with statistics to improve the product.
-                            </Text>
-                        )}
-                        {isNucleusBackend(backend) && (
-                            <Text fontSize="xs" color="gray.400" mt={1}>
-                                For Nucleus backends, use '$omni-api-token' as username with your API token as password
-                            </Text>
-                        )}
-                    </Box>
-                    {isS3Backend(backend) ? null : (
-                    <Box>
-                        <FormLabel fontSize="sm">Password</FormLabel>
-                        <Input
-                            size="sm"
-                            type="password"
-                            value={auth.password}
-                            onChange={(e) => {
-                                const newAuth = { ...auth, password: e.target.value };
-                                setAuth(newAuth);
-                                // Save immediately
-                                localStorage.setItem(getServerStorageKey("password"), newAuth.password || "");
-                                window.dispatchEvent(new Event('storage'));
-                                window.dispatchEvent(new Event('auth-updated'));
-                            }}
-                            placeholder="Enter password"
-                            borderColor={!auth.isAuthenticated && (!auth.password || auth.password === "") ? "red.300" : "inherit"}
-                            _hover={{ borderColor: !auth.isAuthenticated && (!auth.password || auth.password === "") ? "red.400" : "inherit" }}
-                            _focus={{ borderColor: !auth.isAuthenticated && (!auth.password || auth.password === "") ? "red.500" : "green.500" }}
-                        />
-                    </Box>
+                    {isNucleusBackend(backend) ? (
+                        <Box>
+                            {auth.password ? (
+                                <VStack align="stretch" spacing={2}>
+                                    <Text fontSize="sm" color="green.400">
+                                        ✓ Authenticated with Nucleus
+                                    </Text>
+                                    <Button
+                                        size="sm"
+                                        variant="outline"
+                                        colorScheme="red"
+                                        onClick={() => {
+                                            const newAuth = { ...auth, username: '', password: '' };
+                                            setAuth(newAuth);
+                                            localStorage.setItem(getServerStorageKey("username"), "");
+                                            localStorage.setItem(getServerStorageKey("password"), "");
+                                            window.dispatchEvent(new Event('storage'));
+                                            window.dispatchEvent(new Event('auth-updated'));
+                                        }}
+                                    >
+                                        Clear Token
+                                    </Button>
+                                </VStack>
+                            ) : (
+                                <Button
+                                    size="sm"
+                                    colorScheme="green"
+                                    width="100%"
+                                    onClick={handleStartDeviceFlow}
+                                    leftIcon={<Text>🔑</Text>}
+                                >
+                                    Get token from Nucleus
+                                </Button>
+                            )}
+                        </Box>
+                    ) : (
+                        <>
+                            <Box>
+                                <FormLabel fontSize="sm">Username</FormLabel>
+                                <Input
+                                    size="sm"
+                                    value={auth.username}
+                                    onChange={(e) => {
+                                        const newAuth = { ...auth, username: e.target.value };
+                                        setAuth(newAuth);
+                                        // Save immediately
+                                        localStorage.setItem(getServerStorageKey("username"), newAuth.username || "");
+                                        window.dispatchEvent(new Event('storage'));
+                                        window.dispatchEvent(new Event('auth-updated'));
+                                    }}
+                                    placeholder="Enter username"
+                                    borderColor={!auth.isAuthenticated && (!auth.username || auth.username === "") ? "red.300" : "inherit"}
+                                    _hover={{ borderColor: !auth.isAuthenticated && (!auth.username || auth.username === "") ? "red.400" : "inherit" }}
+                                    _focus={{ borderColor: !auth.isAuthenticated && (!auth.username || auth.username === "") ? "red.500" : "green.500" }}
+                                />
+                                {isS3Backend(backend) && (
+                                    <Text fontSize="xs" color="gray.400" mt={1}>
+                                        Please set your username - it helps us with statistics to improve the product.
+                                    </Text>
+                                )}
+                            </Box>
+                            {isS3Backend(backend) ? null : (
+                            <Box>
+                                <FormLabel fontSize="sm">Password</FormLabel>
+                                <Input
+                                    size="sm"
+                                    type="password"
+                                    value={auth.password}
+                                    onChange={(e) => {
+                                        const newAuth = { ...auth, password: e.target.value };
+                                        setAuth(newAuth);
+                                        // Save immediately
+                                        localStorage.setItem(getServerStorageKey("password"), newAuth.password || "");
+                                        window.dispatchEvent(new Event('storage'));
+                                        window.dispatchEvent(new Event('auth-updated'));
+                                    }}
+                                    placeholder="Enter password"
+                                    borderColor={!auth.isAuthenticated && (!auth.password || auth.password === "") ? "red.300" : "inherit"}
+                                    _hover={{ borderColor: !auth.isAuthenticated && (!auth.password || auth.password === "") ? "red.400" : "inherit" }}
+                                    _focus={{ borderColor: !auth.isAuthenticated && (!auth.password || auth.password === "") ? "red.500" : "green.500" }}
+                                />
+                            </Box>
+                            )}
+                        </>
                     )}
                 </>
             )}
@@ -374,6 +520,88 @@ const AuthForm = ({ auth, setAuth, getServerStorageKey }) => {
                     </Button>
                 </HStack>
             </Box> */}
+
+            {/* Device Flow Modal */}
+            <Modal isOpen={isDeviceFlowOpen} onClose={() => { onDeviceFlowClose(); deviceFlowAuth.reset(); }} size="md">
+                <ModalOverlay />
+                <ModalContent>
+                    <ModalHeader>Authenticate with Nucleus</ModalHeader>
+                    <ModalCloseButton />
+                    <ModalBody>
+                        {deviceFlowAuth.isLoading && (
+                            <VStack spacing={4} py={4}>
+                                <Text>Connecting to Nucleus server...</Text>
+                            </VStack>
+                        )}
+                        
+                        {deviceFlowAuth.deviceFlowData && !deviceFlowAuth.authResult && (
+                            <VStack spacing={4} py={4} align="stretch">
+                                <Text fontSize="sm" color="gray.300">
+                                    To authenticate, visit the Nucleus server and enter the code below:
+                                </Text>
+                                
+                                <Box bg="gray.700" p={4} borderRadius="md" textAlign="center">
+                                    <Text fontSize="2xl" fontWeight="bold" letterSpacing="0.2em" color="green.400">
+                                        {deviceFlowAuth.deviceFlowData.user_code}
+                                    </Text>
+                                </Box>
+                                
+                                <VStack spacing={2}>
+                                    <Link 
+                                        href={(() => {
+                                            const uri = deviceFlowAuth.deviceFlowData.verification_uri;
+                                            // If verification_uri has a port (e.g., https://server:3180/...), use standard login URL instead
+                                            if (uri && /:\d+/.test(uri)) {
+                                                const serverHost = getServerHttpsUrl(backend).replace(/^https?:\/\//, '').split('/')[0];
+                                                return `https://${serverHost}/omni/auth/login/device`;
+                                            }
+                                            return uri || getServerHttpsUrl(backend);
+                                        })()} 
+                                        isExternal 
+                                        color="blue.400"
+                                    >
+                                        Open Nucleus Login Page <ExternalLinkIcon mx="2px" />
+                                    </Link>
+                                </VStack>
+                                
+                                {deviceFlowAuth.isPolling && (
+                                    <HStack justify="center" spacing={2}>
+                                        <Box 
+                                            as="span" 
+                                            w={2} 
+                                            h={2} 
+                                            bg="green.400" 
+                                            borderRadius="full"
+                                            animation="pulse 1.5s ease-in-out infinite"
+                                        />
+                                        <Text fontSize="sm" color="gray.400">
+                                            Waiting for you to enter the code...
+                                        </Text>
+                                    </HStack>
+                                )}
+                                
+                                <Text fontSize="xs" color="gray.500" textAlign="center">
+                                    Code expires in {Math.floor((deviceFlowAuth.deviceFlowData.expires_in || 900) / 60)} minutes
+                                </Text>
+                            </VStack>
+                        )}
+                        
+                        {deviceFlowAuth.error && (
+                            <VStack spacing={4} py={4}>
+                                <Text color="red.400">{deviceFlowAuth.error}</Text>
+                                <Button size="sm" onClick={handleStartDeviceFlow}>
+                                    Try Again
+                                </Button>
+                            </VStack>
+                        )}
+                    </ModalBody>
+                    <ModalFooter>
+                        <Button variant="ghost" onClick={() => { onDeviceFlowClose(); deviceFlowAuth.reset(); }}>
+                            Cancel
+                        </Button>
+                    </ModalFooter>
+                </ModalContent>
+            </Modal>
         </VStack>
     );
 };
@@ -413,10 +641,17 @@ const HeaderIcons = () => {
         // Use server-specific apiUrl if available, otherwise fall back to default
         return selectedServer && SERVER_MAPPING[selectedServer]?.apiUrl || defaultApiUrl;
     });
+    const [embeddingConfig, setEmbeddingConfig] = useState(() => {
+        return selectedServer && SERVER_MAPPING[selectedServer]?.embedding_config || defaultEmbeddingConfig;
+    });
 
     // Handle server change
     const handleServerChange = (serverName) => {
         setSelectedServer(serverName);
+        
+        // Get the new embedding config from the server configuration
+        const newEmbeddingConfig = SERVER_MAPPING[serverName]?.embedding_config || defaultEmbeddingConfig;
+        setEmbeddingConfig(newEmbeddingConfig);
         
         // // Update apiUrl for the new server
         // setApiUrl(SERVER_MAPPING[serverName]?.apiUrl || defaultApiUrl);
@@ -450,7 +685,7 @@ const HeaderIcons = () => {
                 
         // Dispatch a custom event to notify other components about the server change
         window.dispatchEvent(new CustomEvent('server-changed', { 
-            detail: { server: serverName }
+            detail: { server: serverName, embeddingConfig: newEmbeddingConfig }
         }));        
     };
     
@@ -646,8 +881,18 @@ const HeaderIcons = () => {
     useEffect(() => {
         console.log("HeaderIcons mounted, auth state:", auth);
         console.log("API URL:", apiUrl);
+        console.log("Embedding Config:", embeddingConfig);
         fetchPluginsInfo();
         fetchBackendInfo();
+        
+        // Dispatch initial server configuration so other components get the correct initial state
+        if (selectedServer && SERVER_MAPPING[selectedServer]) {
+            const initialEmbeddingConfig = SERVER_MAPPING[selectedServer]?.embedding_config || defaultEmbeddingConfig;
+            console.log("Dispatching initial server config:", selectedServer, initialEmbeddingConfig);
+            window.dispatchEvent(new CustomEvent('server-changed', { 
+                detail: { server: selectedServer, embeddingConfig: initialEmbeddingConfig }
+            }));
+        }
     }, []);
     
     return (

@@ -1,5 +1,5 @@
 /**
- * SPDX-FileCopyrightText: Copyright (c) 2024-2025 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+ * SPDX-FileCopyrightText: Copyright (c) 2024-2026 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
  * SPDX-License-Identifier: MIT
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -406,6 +406,7 @@ const AssetDetailsModal = ({
   const { isOpen: isDepsOpen, onToggle: toggleDeps } = useDisclosure();
   const { isOpen: isInverseDepsOpen, onToggle: toggleInverseDeps } = useDisclosure();
   const { isOpen: isTechnicalOpen, onToggle: toggleTechnical } = useDisclosure();
+  const { isOpen: isTagsOpen, onToggle: toggleTags } = useDisclosure();
   
   const overallStatus = calculateOverallIndexStatus(pluginStatuses);
 
@@ -1074,6 +1075,54 @@ const AssetDetailsModal = ({
               </Collapse>
             </Box>
 
+              {/* Tags */}
+              <Box>
+              <HStack justify="space-between" mb={2}>
+                <Text 
+                  fontSize="lg" 
+                  fontWeight="semibold" 
+                  color="green.400"
+                  cursor="pointer"
+                  onClick={toggleTags}
+                >
+                  Tags
+                </Text>
+                <IconButton
+                  size="sm"
+                  variant="ghost"
+                  icon={isTagsOpen ? <ChevronUpIcon /> : <ChevronDownIcon />}
+                  onClick={toggleTags}
+                  aria-label="Toggle inverse dependencies"
+                />
+              </HStack>
+              <Collapse in={isTagsOpen} animateOpacity>
+                <Box bg="gray.750" p={4} borderRadius="md">
+                  {selectedItem.source.tags?.length > 0 ? (
+                    <Table size="sm" variant="simple">
+                    <Thead>
+                      <Tr>
+                        <Th color="gray.300">Tag</Th>
+                        <Th color="gray.300">Value</Th>
+                      </Tr>
+                    </Thead>
+                    <Tbody>
+                      {selectedItem.source.tags.map((tag) => (
+                        <Tr key={tag}>
+                          <Td fontWeight="semibold" color="gray.300" width="30%">{tag.tag}</Td>
+                          <Td fontSize="sm" fontFamily="mono">{tag.value}</Td>
+                        </Tr>
+                      ))}
+                      </Tbody>
+                    </Table>
+                  ) : (
+                    <Box textAlign="center" py={8} color="gray.400">
+                      <Text>No tags found</Text>
+                    </Box>
+                  )}
+                  </Box>
+              </Collapse>
+            </Box>
+
             {/* Details */}
             {selectedItem.source && (
               <Box>
@@ -1187,7 +1236,7 @@ const AssetDetailsModal = ({
                             'vision_generated_metadata', 'usd_properties', 'etag', 
                             'hash_value', 'empty', 'on_mount', 'created_by', 'modified_by',
                             'content_type', 'mime_type', 'is_directory', 'permissions',
-                            'checksum', 'version', 'path'
+                            'checksum', 'version', 'path', 'tags'
                           ];
                           
                           if (skipFields.includes(key) || value === null || value === undefined || value === '') {

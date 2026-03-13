@@ -1,5 +1,5 @@
 /**
- * SPDX-FileCopyrightText: Copyright (c) 2024-2025 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+ * SPDX-FileCopyrightText: Copyright (c) 2024-2026 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
  * SPDX-License-Identifier: MIT
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -28,8 +28,6 @@ import {
   HStack,
   Text,
   Input,
-  InputGroup,
-  InputLeftAddon,
   Select,
   RadioGroup,
   Radio,
@@ -183,7 +181,8 @@ const SearchFilters = ({
     setSearchParams({
       ...searchParams,
       filter_by_properties: "",
-      vision_metadata: ""
+      vision_metadata: "",
+      filter_by_tags: "",
     });
   };
 
@@ -410,6 +409,18 @@ const SearchFilters = ({
                   value={searchParams.vision_metadata}
                   onChange={handleChange}
                   placeholder="AI-generated tags"
+                />
+              </FormControl>
+
+              <FormControl>
+                <FormLabel fontSize="sm">Tags</FormLabel>
+                <Input
+                  size="sm"
+                  autoComplete="off"
+                  name="filter_by_tags"
+                  value={searchParams.filter_by_tags}
+                  onChange={handleChange}
+                  placeholder="Tags"
                 />
               </FormControl>
             </FilterSection>

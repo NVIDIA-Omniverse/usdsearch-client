@@ -71,7 +71,7 @@ async def search_hybrid(search_request: BasicSearchRequest, api_client: Optional
         ...         hybrid_text_query="red car",
         ...         vector_queries=[
         ...             usd_search_client.VectorQuery(
-        ...                 field_name="clip-embedding.embedding",
+        ...                 field_name="siglip2-embedding.embedding",
         ...                 query_type=usd_search_client.VectorQueryType.TEXT,
         ...                 query=usd_search_client.Query(actual_instance="red car")
         ...             )
@@ -86,7 +86,7 @@ async def search_hybrid(search_request: BasicSearchRequest, api_client: Optional
     Returns:
         List[HybridSearchResponse]: The search response.
     """
-    return await AISearchApi(api_client=api_client)._search_hybrid_post(search_request)
+    return await AISearchApi(api_client=api_client).search_hybrid_post(search_request)
 
 async def get_images(asset_url: Optional[str] = None, image_key: Optional[str] = None, img_offset: Optional[int] = None, api_client: Optional[ApiClient] = None) -> bytes:
     """
@@ -112,7 +112,7 @@ async def get_images(asset_url: Optional[str] = None, image_key: Optional[str] =
     Returns:
         bytes: The image data.
     """
-    return await ImagesApi(api_client=api_client)._images_get(
+    return await ImagesApi(api_client=api_client).images_get(
         asset_url=asset_url,
         image_key=image_key,
         img_offset=img_offset,
