@@ -251,7 +251,7 @@ async with usd_search_client.ApiClient(configuration) as api_client:
     # Create an instance of the API class
     api_instance = usd_search_client.AISearchApi(api_client)
     description = '' # str | Conduct text-based searches powered by AI (optional) (default to '')
-    image_similarity_search = ['[]'] # List[str] | Perform similarity searches based on a list of images (optional)
+    image_similarity_search = [] # List[str] | Perform similarity searches based on a list of images (optional)
     file_name = '' # str | Filter results by asset file name, allowing partial matches. Use wildcards: `*` for any number of characters, `?` for a single character. Separate terms with `,` for OR and `;` for AND. (optional) (default to '')
     exclude_file_name = '' # str | Exclude results by asset file name, allowing partial matches. Use wildcards: `*` for any number of characters, `?` for a single character. Separate terms with `,` for OR and `;` for AND. (optional) (default to '')
     file_extension_include = '' # str | Filter results by file extension. Use wildcards: `*` for any number of characters, `?` for a single character. Separate terms with `,` for OR and `;` for AND. (optional) (default to '')
